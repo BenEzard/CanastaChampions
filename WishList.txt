@@ -1,0 +1,19 @@
+HIGH PRIORITY
+--------------------------
+RemovePlayer() method which logically deletes them from Players, RegisteredPlayers and Teams
+
+MEDIUM PRIORITY
+--------------------------
+- Support for randomisation of teams
+- Should it be storing the score in an object and then writing to the database in a single record per team?
+- Split DBMethods into multiple files?
+
+MINOR PRIORITY
+--------------------------
+- Split Player into first name, surname
+- Ability to add multiple players at once.
+- Ability to add DOBs for Players
+
+TRIVIAL PRIORITY
+--------------------------
+
