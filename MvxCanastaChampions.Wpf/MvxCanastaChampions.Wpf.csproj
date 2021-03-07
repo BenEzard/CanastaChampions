@@ -7,11 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\arrow-left.png" />
+    <None Remove="Images\arrow-right.png" />
+    <None Remove="Images\task-attention.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MvvmCross.Platforms.Wpf" Version="7.1.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MvxCanastaChampions.Core\MvxCanastaChampions.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\arrow-left.png" />
+    <Resource Include="Images\arrow-right.png" />
+    <Resource Include="Images\task-attention.png" />
   </ItemGroup>
 
 </Project>

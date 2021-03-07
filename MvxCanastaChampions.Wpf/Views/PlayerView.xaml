@@ -1,0 +1,58 @@
+﻿<views:MvxWpfView
+            xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
+            xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
+            x:Class="MvxCanastaChampions.Wpf.Views.PlayerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MvxCanastaChampions.Wpf.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Background="White">
+    <DockPanel LastChildFill="True" Margin="10">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Button>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/MvxCanastaChampions.Wpf;component/Images/arrow-left.png" Width="22"></Image>
+                    <TextBlock Text="Back" Margin="5,0,5,0" VerticalAlignment="Center" Padding="5" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+        
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <TextBlock Text="Add New Player" FontSize="16" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Padding="0,5"/>
+
+            <TextBlock Grid.Column="0" Grid.Row="1" Text="Name:" Margin="0,5" HorizontalAlignment="Right" />
+            <TextBox Text="{Binding InitialisingPlayer.PlayerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Grid.Column="1" Grid.Row="1" Width="150" Margin="5" VerticalAlignment="Center" />
+
+            <TextBlock Text="Deleted:" Grid.Row="2" Grid.Column="0" Margin="0,5" HorizontalAlignment="Right" />
+            <CheckBox IsChecked="{Binding InitialisingPlayer.LogicallyDeleted, Mode=TwoWay}"
+            Grid.Row="2" Grid.Column="1" Margin="5" VerticalAlignment="Center" />
+
+        <StackPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0 10">
+            <CheckBox Margin="5" VerticalAlignment="Center" />
+            <TextBlock Text="Register to Competition as regular" Margin="0,5" HorizontalAlignment="Right" />
+            <CheckBox Margin="5" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" >
+            <Button Content="Save" Padding="5" />
+        </StackPanel>
+    </Grid>
+    </DockPanel>
+</views:MvxWpfView>

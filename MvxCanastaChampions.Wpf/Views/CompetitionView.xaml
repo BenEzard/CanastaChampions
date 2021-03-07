@@ -32,7 +32,12 @@
             </ListBox>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button IsEnabled="{Binding IsCompetitionSelected}" mvx:Bi.nd="Command PlayCompetitionCommand"
-                    Margin="10" Padding="5">Play in this Competition</Button>
+                    Margin="10" Padding="5">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Play in this Competition" VerticalAlignment="Center"/>
+                        <Image Source="/Images/arrow-right.png" Width="22"></Image>
+                    </StackPanel>
+                </Button>
             </StackPanel>
             <StackPanel Orientation="Vertical" Margin="0 50 0 0">
                 <Grid>

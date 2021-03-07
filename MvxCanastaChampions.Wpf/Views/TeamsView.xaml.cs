@@ -1,6 +1,10 @@
-﻿using MvvmCross.Platforms.Wpf.Views;
+﻿using CanastaChampions.DataAccess.Models;
+using MvvmCross.Platforms.Wpf.Views;
+using MvxCanastaChampions.Core.ViewModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,6 +26,13 @@ namespace MvxCanastaChampions.Wpf.Views
         public TeamsView()
         {
             InitializeComponent();
+        }
+
+        private void TeamNames_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TeamsViewModel tmv = DataContext as TeamsViewModel;
+            IList items = (IList)TeamNames.SelectedItems;
+            tmv.SelectedTeamMembers = items.Cast<TeamFormationModel>();
         }
     }
 }

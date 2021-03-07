@@ -1,12 +1,14 @@
 HIGH PRIORITY
 --------------------------
-RemovePlayer() method which logically deletes them from Players, RegisteredPlayers and Teams
+- RemovePlayer() method which logically deletes them from Players, RegisteredPlayers and Teams
+- Updating the Team Number on the UI for TeamsView
 
 MEDIUM PRIORITY
 --------------------------
 - Support for randomisation of teams
 - Should it be storing the score in an object and then writing to the database in a single record per team?
 - Split DBMethods into multiple files?
+- Ability to 'Add Players from other Competitions' on TeamsView
 
 MINOR PRIORITY
 --------------------------

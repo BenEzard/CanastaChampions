@@ -13,9 +13,9 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -24,53 +24,59 @@
 
         <TextBlock Text="Define Teams" FontSize="20" FontWeight="Bold" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Margin="0 5"/>
 
-        <TextBlock Text="Registered Players" FontSize="16" Grid.Column="0" Grid.Row="1" Margin="0 5"/>
+        <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <TextBlock FontSize="12" FontStyle="Italic" Margin="0,5,0,0" Text="Select Players and form a Team with them using the Form Team button." />
+            <TextBlock FontSize="12" FontStyle="Italic" Margin="0" Text="Order the Players in the list to their placement around the table." />
+        </StackPanel>
 
         <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="2">
-            <DataGrid x:Name="TeamGrid"
-                ItemsSource="{Binding TeamFormationList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                      SelectedItem="{Binding SelectedTeam, Mode=TwoWay}"
-                      SelectionMode="Extended" 
-                Height="200" Width="220" >
-            </DataGrid>
-            <CheckBox Content="Add Players from other Competitions." />
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-                <Button Grid.Column="1" Grid.Row="2" Padding="5">Form Team</Button>
-                <Button Grid.Column="1" Grid.Row="2" Margin="30,0,0,0">Disband Team</Button>
+            <StackPanel Orientation="Horizontal" Margin="10" >
+                <ListView x:Name="TeamNames" Margin="0,0,5,0"
+                          ItemsSource="{Binding TeamFormationList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          SelectionChanged="TeamNames_SelectionChanged" SelectedIndex="{Binding SelectedIndex}"
+                          Height="150">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" Width="120" DisplayMemberBinding="{Binding PlayerName}" />
+                            <GridViewColumn Header="Team" Width="50" DisplayMemberBinding="{Binding TeamNumber}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                    <Button  mvx:Bi.nd="Command MoveUpPlayerCommand" IsEnabled="{Binding CanMoveUp}"
+                        Margin="0,0,0,5" Padding="5">^</Button>
+                    <Button  mvx:Bi.nd="Command MoveDownPlayerCommand" IsEnabled="{Binding CanMoveDown}"
+                        Padding="5">v</Button>
+                </StackPanel>
             </StackPanel>
+            
+            <CheckBox Content="Add Players from other Competitions." IsEnabled="False" FontStyle="Italic"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="1" Margin="10,10,10,0" >
+            <Button IsEnabled="{Binding CanFormTeam}" mvx:Bi.nd="Command FormTeamCommand"
+                    Grid.Column="1" Grid.Row="2" Padding="5">Form Team</Button>
+            <Button IsEnabled="{Binding CanUnBindTeam}" mvx:Bi.nd="Command UnBindTeamCommand"
+                Grid.Column="1" Grid.Row="2" Margin="0 5" Padding="5">Disband Team</Button>
+            <Button mvx:Bi.nd="Command AddPlayerCommand"
+                Grid.Column="1" Grid.Row="2" Margin="0,25,0,5" Padding="5">Add Player...</Button>
+            <Button IsEnabled="{Binding IsPlayerSelected}" mvx:Bi.nd="Command EditPlayerCommand"
+                Grid.Column="1" Grid.Row="2" Padding="5">Edit Player...</Button>
+        </StackPanel>
+            
+        <StackPanel Grid.Column="1" Grid.Row="3">
+            <Button mvx:Bi.nd="Command StartGameCommand"
+                Margin="5" Padding="5">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Start Game" VerticalAlignment="Center"/>
+                    <Image Source="/Images/arrow-right.png" Width="22"></Image>
+                </StackPanel>
+            </Button>
         </StackPanel>
 
         
 
-        <TextBlock Text="Add New Player" FontSize="16" Grid.Column="2" Grid.Row="1"  Margin="30,0,0,0"/>
-        <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="2" Margin="30,0,0,0">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Column="0" Grid.Row="0" Text="First Name:" Margin="0,5" />
-                <TextBox Grid.Column="1" Grid.Row="0" Width="150" Margin="5" VerticalAlignment="Center" />
-
-                <TextBlock Grid.Column="0" Grid.Row="1" Text="Last Name:" Margin="0,5" />
-                <TextBox Grid.Column="1" Grid.Row="1" Width="150" Margin="5" VerticalAlignment="Center" />
-
-                <TextBlock Text="Deleted:" Grid.Column="0" Grid.Row="3" Margin="0,5" HorizontalAlignment="Right" />
-                <CheckBox Grid.Row="3" Grid.Column="1" Margin="5" VerticalAlignment="Center" />
-
-                <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" >
-                    <Button Content="Add Player" Padding="5"/>
-                    <Button Content="Save" Padding="5" Margin="30,0,0,0"/>
-                </StackPanel>
-            </Grid>
-        </StackPanel>
+        
+     
     </Grid>
 </views:MvxWpfView>

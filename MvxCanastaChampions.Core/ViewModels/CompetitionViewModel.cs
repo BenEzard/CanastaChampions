@@ -8,6 +8,8 @@ namespace MvxCanastaChampions.Core.ViewModels
 {
     public class CompetitionViewModel : MvxViewModel
     {
+        private readonly IMvxNavigationService _navigationService;
+
         private MvxObservableCollection<CompetitionModel> _competitions = new MvxObservableCollection<CompetitionModel>();
         private CompetitionModel _selectedCompetition;
         private string _competitionName;
@@ -105,6 +107,6 @@ namespace MvxCanastaChampions.Core.ViewModels
         public bool IsCompetitionSelected
             => SelectedCompetition != null;
 
-        private readonly IMvxNavigationService _navigationService;
+        
     }
 }

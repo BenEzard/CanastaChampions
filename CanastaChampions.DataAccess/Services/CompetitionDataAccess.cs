@@ -182,5 +182,51 @@ namespace MvxCanastaChampions.Core.Services
 
             _conn.Dispose();
         }
+    
+        /// <summary>
+        /// Insert a Player to the database.
+        /// </summary>
+        /// <param name="player"></param>
+        public static void InsertPlayer(PlayerModel player)
+        {
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "INSERT INTO Players (PlayerName)" +
+                        " VALUES (@playerName)";
+                command.Parameters.AddWithValue("@playerName", player.PlayerName);
+                command.ExecuteNonQuery();
+                player.PlayerID = _conn.LastInsertRowId;
+            }
+
+            _conn.Dispose();
+        }
+
+        /// <summary>
+        /// Register a Player to a Competition.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="playerID"></param>
+        /// <param name="regular"></param>
+        public static void RegisterPlayerToCompetition(long competitionID, long playerID, bool regular)
+        {
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "INSERT INTO RegisteredPlayers (CompetitionID, PlayerID, regular)" +
+                        " VALUES (@competitionID, @playerID, @regular)";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@playerID", playerID);
+                command.Parameters.AddWithValue("@regular", regular);
+                command.ExecuteNonQuery();
+            }
+
+            _conn.Dispose();
+        }
+
     }
 }
