@@ -17,15 +17,15 @@ namespace MvxCanastaChampions.Core.ViewModels
 
         public CompetitionModel SelectedCompetition = null;
 
-        private MvxObservableCollection<TeamFormationModel> _teamFormationList = new MvxObservableCollection<TeamFormationModel>();
+        private MvxObservableCollection<GamePlayerModel> _teamFormationList = new MvxObservableCollection<GamePlayerModel>();
 
 
-        public MvxObservableCollection<TeamFormationModel> TeamFormationList
+        public MvxObservableCollection<GamePlayerModel> TeamFormationList
         {
             get => _teamFormationList;
             set { 
                 _teamFormationList = value;
-                System.Diagnostics.Debug.WriteLine($"updating the list");
+                //System.Diagnostics.Debug.WriteLine($"updating the list");
                 SetProperty(ref _teamFormationList, value);
             }
         }
@@ -39,9 +39,9 @@ namespace MvxCanastaChampions.Core.ViewModels
 
         public int SelectedIndex { get; set; }
 
-        private IEnumerable<TeamFormationModel> _selectedTeamMembers = new List<TeamFormationModel>();
+        private IEnumerable<GamePlayerModel> _selectedTeamMembers = new List<GamePlayerModel>();
 
-        public IEnumerable<TeamFormationModel> SelectedTeamMembers
+        public IEnumerable<GamePlayerModel> SelectedTeamMembers
         {
             get { return _selectedTeamMembers; }
             set { 
@@ -70,14 +70,14 @@ namespace MvxCanastaChampions.Core.ViewModels
         /// </summary>
         public void FormTeam()
         {
-            foreach (TeamFormationModel model in SelectedTeamMembers)
+            foreach (GamePlayerModel model in SelectedTeamMembers)
             {
-                TeamFormationModel tfm = TeamFormationList.Where(x => x.PlayerName == model.PlayerName).FirstOrDefault();
+                GamePlayerModel tfm = TeamFormationList.Where(x => x.PlayerName == model.PlayerName).FirstOrDefault();
                 tfm.TeamNumber = _teamNumber;
                 System.Diagnostics.Debug.WriteLine($"==> tfm is {tfm.PlayerName} and {tfm.TeamNumber}");
             }
             ++_teamNumber;
-
+            RaisePropertyChanged(() => CanStartGame);
         }
         #endregion
 
@@ -101,7 +101,7 @@ namespace MvxCanastaChampions.Core.ViewModels
 
         public void EditPlayer()
         {
-            TeamFormationModel tf = TeamFormationList[SelectedIndex];
+            GamePlayerModel tf = TeamFormationList[SelectedIndex];
             PlayerModel player = new PlayerModel
             {
 
@@ -121,12 +121,13 @@ namespace MvxCanastaChampions.Core.ViewModels
 
         public void UnBindTeam()
         {
-            foreach (TeamFormationModel model in SelectedTeamMembers)
+            foreach (GamePlayerModel model in SelectedTeamMembers)
             {
-                TeamFormationModel tfm = TeamFormationList.Where(x => x.PlayerName == model.PlayerName).FirstOrDefault();
+                GamePlayerModel tfm = TeamFormationList.Where(x => x.PlayerName == model.PlayerName).FirstOrDefault();
                 tfm.TeamNumber = 0;
                 System.Diagnostics.Debug.WriteLine($"==> tfm is {tfm.PlayerName} and {tfm.TeamNumber}");
             }
+            RaisePropertyChanged(() => CanStartGame);
         }
         #endregion
 
@@ -142,7 +143,7 @@ namespace MvxCanastaChampions.Core.ViewModels
         public void MoveUpPlayer()
         {
             int selectedIndex = SelectedIndex;
-            TeamFormationModel tf = TeamFormationList[SelectedIndex];
+            GamePlayerModel tf = TeamFormationList[SelectedIndex];
             TeamFormationList.RemoveAt(selectedIndex);
             TeamFormationList.Insert(selectedIndex - 1, tf);
         }
@@ -158,7 +159,7 @@ namespace MvxCanastaChampions.Core.ViewModels
         public void MoveDownPlayer()
         {
             int selectedIndex = SelectedIndex;
-            TeamFormationModel tf = TeamFormationList[SelectedIndex];
+            GamePlayerModel tf = TeamFormationList[SelectedIndex];
             TeamFormationList.RemoveAt(selectedIndex);
             TeamFormationList.Insert(selectedIndex + 1, tf);
         }
@@ -169,15 +170,18 @@ namespace MvxCanastaChampions.Core.ViewModels
 
         public void StartGame()
         {
-            List<TeamFormationModel> teams = new List<TeamFormationModel>();
-            foreach (TeamFormationModel m in TeamFormationList)
+            List<GamePlayerModel> teams = new List<GamePlayerModel>();
+            foreach (GamePlayerModel m in TeamFormationList)
             {
                 teams.Add(m);
             }
 
-            _navigationService.Navigate<GameViewModel, List<TeamFormationModel>>(teams);
+            _navigationService.Navigate<GameViewModel, List<GamePlayerModel>>(teams);
         }
         #endregion
+
+        public bool CanStartGame
+            => (TeamFormationList.Where(x => x.TeamNumber == 0).Count() == 0) ? true : false;
 
 
         public TeamsViewModel(IMvxNavigationService navigationService)
@@ -196,8 +200,8 @@ namespace MvxCanastaChampions.Core.ViewModels
         public override void Prepare(CompetitionModel parameter)
         {
             SelectedCompetition = parameter;
-            List<TeamFormationModel> players = CompetitionServices.GetPlayerRoster(parameter.CompetitionID);
-            TeamFormationList = new MvxObservableCollection<TeamFormationModel>(players);
+            List<GamePlayerModel> players = CompetitionServices.GetPlayerRoster(parameter);
+            TeamFormationList = new MvxObservableCollection<GamePlayerModel>(players);
         }
 
     }

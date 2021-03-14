@@ -35,7 +35,7 @@ namespace CanastaChampions.Domain.Services
             } 
             else
             {
-                System.Console.WriteLine($"Player {playerName} already exists (PlayerID={playerID}); not creating.");
+                System.Diagnostics.Debug.WriteLine($"Player {playerName} already exists (PlayerID={playerID}); not creating.");
             }
 
             return player;

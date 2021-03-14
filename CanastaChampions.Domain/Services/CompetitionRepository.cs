@@ -42,7 +42,7 @@ namespace CanastaChampions.Domain.Services
             }
             else
             {
-                Console.WriteLine($"Competition {competitionName} already exists (CompetitionID={competitionID}); not creating.");
+                System.Diagnostics.Debug.WriteLine($"Competition {competitionName} already exists (CompetitionID={competitionID}); not creating.");
                 competition.CompetitionID = competitionID;
             }
 
@@ -92,7 +92,7 @@ namespace CanastaChampions.Domain.Services
             }
             else
             {
-                Console.WriteLine($"Player is already registered (RegisteredPlayerID={registeredPlayerID}; not registering.");
+                System.Diagnostics.Debug.WriteLine($"Player is already registered (RegisteredPlayerID={registeredPlayerID}; not registering.");
             }
         }
 
@@ -116,7 +116,7 @@ namespace CanastaChampions.Domain.Services
             }
             else
             {
-                Console.WriteLine($"Team combination of {teamMember1ID} and {teamMember2ID} already exists; not creating.");
+                System.Diagnostics.Debug.WriteLine($"Team combination of {teamMember1ID} and {teamMember2ID} already exists; not creating.");
             }
             
             return rValue;

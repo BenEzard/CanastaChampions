@@ -75,6 +75,9 @@
                                     Margin="100,20,0,0" Padding="5" HorizontalAlignment="Right" />
                 </StackPanel>
             </StackPanel>
+            <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                <Button Margin="0 10" Padding="5" mvx:Bi.nd="Command ResetDatabaseCommand">Reset Database</Button>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </views:MvxWpfView>

@@ -15,5 +15,21 @@ namespace CanastaChampions.DataAccess.Models
         public long CompetitionID { get; set; }
 
         public bool LogicallyDeleted { get; set; }
+
+        public PlayerModel()
+        {
+
+        }
+
+        public PlayerModel(string playerName)
+        {
+            PlayerName = playerName;
+        }
+
+        public PlayerModel(string playerName, long competitionID)
+        {
+            PlayerName = playerName;
+            CompetitionID = competitionID;
+        }
     }
 }

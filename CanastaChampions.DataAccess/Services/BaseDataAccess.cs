@@ -7,7 +7,8 @@ namespace CanastaChampions.DataAccess.Services
 {
     public abstract class BaseDataAccess
     {
-        protected static string CONNECTION_STRING = @"DataSource=D:\Development\CanastaChampions\CanastaChampions.db;Version=3";
+        public static string DB_FILE = @"D:\Development\CanastaChampions\CanastaChampions.db";
+        protected static string CONNECTION_STRING = @"DataSource=" + DB_FILE + ";Version=3";
         protected static SQLiteConnection _conn = null;
     }
 }

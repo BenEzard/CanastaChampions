@@ -90,6 +90,92 @@ namespace MvxCanastaChampions.Core.Services
         }
 
         /// <summary>
+        /// Return Team and Player information about Competitions with regular teams.
+        /// (Note that GamePlayerModel.TeamNumber is a consecutive number and NOT a database ID).
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <returns></returns>
+        public static List<GamePlayerModel> GetRegularTeams(long competitionID)
+        {
+            List<GamePlayerModel> rValue = null;
+
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "SELECT CompetitionID," +
+                    " Team1ID, Team1_Member1ID, Team1_Member1_Name, Team1_Member2ID, Team1_Member2_Name, " +
+                    " Team2ID, Team2_Member1ID, Team2_Member1_Name, Team2_Member2ID, Team2_Member2_Name, " +
+                    " Team3ID, Team3_Member1ID, Team3_Member1_Name, Team3_Member2ID, Team3_Member2_Name " +
+                    " FROM vwRegularTeams" +
+                    " WHERE CompetitionID = @competitionID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+
+                SQLiteDataReader reader = command.ExecuteReader();
+                int teamNumber = 1;
+
+                if (reader.HasRows)
+                {
+                    rValue = new List<GamePlayerModel>();
+                    while (reader.Read())
+                    {
+                        // Team 1
+                        long gameTeamID = reader.GetInt64(1);
+                        GamePlayerModel gpm = new GamePlayerModel(competitionID, teamNumber);
+                        gpm.GameTeamID = gameTeamID;
+                        gpm.PlayerID = reader.GetInt64(2);
+                        gpm.PlayerName = reader.GetString(3);
+                        rValue.Add(gpm);
+
+                        gpm = new GamePlayerModel(competitionID, teamNumber);
+                        gpm.GameTeamID = gameTeamID;
+                        gpm.PlayerID = reader.GetInt64(4);
+                        gpm.PlayerName = reader.GetString(5);
+                        rValue.Add(gpm);
+                        ++teamNumber;
+
+                        // Team 2
+                        gameTeamID = reader.GetInt64(6);
+                        gpm = new GamePlayerModel(competitionID, teamNumber);
+                        gpm.GameTeamID = gameTeamID;
+                        gpm.PlayerID = reader.GetInt64(7);
+                        gpm.PlayerName = reader.GetString(8);
+                        rValue.Add(gpm);
+
+                        gpm = new GamePlayerModel(competitionID, teamNumber);
+                        gpm.GameTeamID = gameTeamID;
+                        gpm.PlayerID = reader.GetInt64(9);
+                        gpm.PlayerName = reader.GetString(10);
+                        rValue.Add(gpm);
+                        ++teamNumber;
+
+                        if (reader.IsDBNull(11) == false)
+                        {
+                            // Team 3
+                            gameTeamID = reader.GetInt64(11);
+                            gpm = new GamePlayerModel(competitionID, teamNumber);
+                            gpm.GameTeamID = gameTeamID;
+                            gpm.PlayerID = reader.GetInt64(12);
+                            gpm.PlayerName = reader.GetString(13);
+                            rValue.Add(gpm);
+
+                            gpm = new GamePlayerModel(competitionID, teamNumber);
+                            gpm.GameTeamID = gameTeamID;
+                            gpm.PlayerID = reader.GetInt64(15);
+                            gpm.PlayerName = reader.GetString(16);
+                            rValue.Add(gpm);
+                        }
+                    }
+                }
+            }
+
+            _conn.Dispose();
+
+            return rValue;
+        }
+
+        /// <summary>
         /// Create a new Competition, adding it to the in-memory collection.
         /// </summary>
         /// <param name="competitionModel"></param>
@@ -104,7 +190,7 @@ namespace MvxCanastaChampions.Core.Services
             }
             else
             {
-                Console.WriteLine($"Competition {competitionModel.CompetitionName} already exists (CompetitionID={competitionID}); not creating.");
+                System.Diagnostics.Debug.WriteLine($"Competition {competitionModel.CompetitionName} already exists (CompetitionID={competitionID}); not creating.");
                 competitionModel.CompetitionID = competitionID;
             }
 
@@ -129,6 +215,97 @@ namespace MvxCanastaChampions.Core.Services
             }
 
             return rValue;
+        }
+
+        /// <summary>
+        /// Get Competition by Competition name.
+        /// </summary>
+        /// <param name="competitionName"></param>
+        /// <returns></returns>
+        public static CompetitionModel GetCompetitionByName(string competitionName)
+        {
+            CompetitionModel rValue = null;
+
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "SELECT CompetitionID, CompetitionName, FixedTeams, RandomiseTeams, LogicallyDeleted" +
+                    " FROM Competitions" +
+                    " WHERE CompetitionName = @competitionName";
+                command.Parameters.AddWithValue("@competitionName", competitionName);
+                SQLiteDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    rValue = new CompetitionModel();
+                    rValue.CompetitionID = reader.GetInt64(0);
+                    rValue.CompetitionName = reader.GetString(1);
+                    rValue.TeamsAreFixed = reader.GetBoolean(2);
+                    rValue.TeamsAreRandomised = reader.GetBoolean(3);
+                    rValue.LogicallyDeleted = reader.GetBoolean(4);
+                }
+            }
+
+            _conn.Dispose();
+
+            return rValue;
+        }
+
+        /// <summary>
+        /// Check to see if a Competition (based on Name) exists.
+        /// </summary>
+        /// <param name="playerName"></param>
+        /// <param name="playerID"></param>
+        /// <returns></returns>
+        public static bool DoesPlayerExist(string playerName, out long playerID)
+        {
+            bool rValue = false;
+
+            playerID = GetPlayerID(playerName);
+            if (playerID != -1)
+                rValue = true;
+
+            return rValue;
+        }
+
+        /// <summary>
+        /// Get Player based on the player name.
+        /// </summary>
+        /// <param name="playerName"></param>
+        /// <returns></returns>
+        public static PlayerModel GetPlayer(string playerName)
+        {
+            PlayerModel player = null;
+
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "SELECT" +
+                    " PlayerID," +
+                    " PlayerName," +
+                    " LogicallyDeleted" +
+                    " FROM Players" +
+                    " WHERE PlayerName = @playerName";
+                command.Parameters.AddWithValue("@playerName", playerName);
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        player = new PlayerModel();
+                        player.PlayerID = reader.GetInt64(0);
+                        player.PlayerName = reader.GetString(1);
+                        player.LogicallyDeleted = reader.GetBoolean(2);
+                    }
+                }
+            }
+
+            _conn.Dispose();
+
+            return player;
         }
 
         /// <summary>
@@ -160,11 +337,39 @@ namespace MvxCanastaChampions.Core.Services
         }
 
         /// <summary>
+        /// Given a Player's name, returns the PlayerID (if it exists in the database), or -1 if it doesn't.
+        /// </summary>
+        /// <param name="playerName"></param>
+        /// <returns></returns>
+        public static long GetPlayerID(string playerName)
+        {
+            long playerID = -1;
+
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "SELECT PlayerID FROM Players WHERE PlayerName = @playerName";
+                command.Parameters.AddWithValue("@playerName", playerName);
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                        playerID = reader.GetInt64(0);
+                }
+            }
+
+            _conn.Dispose();
+
+            return playerID;
+        }
+
+        /// <summary>
         /// Insert a new Competition into the database.
         /// Once inserted, CompetitionID is populated.
         /// </summary>
         /// <param name="competition"></param>
-        public static void InsertCompetition(CompetitionModel competition)
+        public static CompetitionModel InsertCompetition(CompetitionModel competition)
         {
             _conn = new SQLiteConnection(CONNECTION_STRING);
             _conn.Open();
@@ -181,13 +386,15 @@ namespace MvxCanastaChampions.Core.Services
             }
 
             _conn.Dispose();
+
+            return competition;
         }
     
         /// <summary>
         /// Insert a Player to the database.
         /// </summary>
         /// <param name="player"></param>
-        public static void InsertPlayer(PlayerModel player)
+        public static PlayerModel InsertPlayer(PlayerModel player)
         {
             _conn = new SQLiteConnection(CONNECTION_STRING);
             _conn.Open();
@@ -202,6 +409,8 @@ namespace MvxCanastaChampions.Core.Services
             }
 
             _conn.Dispose();
+
+            return player;
         }
 
         /// <summary>
@@ -210,7 +419,7 @@ namespace MvxCanastaChampions.Core.Services
         /// <param name="competitionID"></param>
         /// <param name="playerID"></param>
         /// <param name="regular"></param>
-        public static void RegisterPlayerToCompetition(long competitionID, long playerID, bool regular)
+        public static void InsertPlayerToCompetition(long competitionID, long playerID, bool regular)
         {
             _conn = new SQLiteConnection(CONNECTION_STRING);
             _conn.Open();
@@ -226,6 +435,28 @@ namespace MvxCanastaChampions.Core.Services
             }
 
             _conn.Dispose();
+        }
+
+        public static long InsertTeam(long competitionID, long teamMember1ID, long teamMember2ID)
+        {
+            long rValue = -1;
+
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "INSERT INTO Team (CompetitionID, TeamMember1ID, TeamMember2ID)" +
+                        " VALUES (@competitionID, @teamMember1, @teamMember2)";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@teamMember1", teamMember1ID);
+                command.Parameters.AddWithValue("@teamMember2", teamMember2ID);
+                command.ExecuteNonQuery();
+                rValue = _conn.LastInsertRowId;
+            }
+
+            _conn.Dispose();
+            return rValue;
         }
 
     }

@@ -11,5 +11,18 @@ namespace CanastaChampions.DataAccess.Models
         public bool TeamsAreFixed { get; set; }
         public bool TeamsAreRandomised { get; set; }
         public bool LogicallyDeleted { get; set; }
+
+        public CompetitionModel()
+        {
+
+        }
+
+        public CompetitionModel(string competitionName, bool teamsAreFixed, bool teamsAreRandomised)
+        {
+            CompetitionName = competitionName;
+            TeamsAreFixed = teamsAreFixed;
+            TeamsAreRandomised = teamsAreRandomised;
+            LogicallyDeleted = false;
+        }
     }
 }

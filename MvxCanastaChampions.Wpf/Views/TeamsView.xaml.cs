@@ -32,7 +32,7 @@ namespace MvxCanastaChampions.Wpf.Views
         {
             TeamsViewModel tmv = DataContext as TeamsViewModel;
             IList items = (IList)TeamNames.SelectedItems;
-            tmv.SelectedTeamMembers = items.Cast<TeamFormationModel>();
+            tmv.SelectedTeamMembers = items.Cast<GamePlayerModel>();
         }
     }
 }

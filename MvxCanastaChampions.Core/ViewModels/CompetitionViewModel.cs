@@ -1,4 +1,6 @@
-﻿using CanastaChampions.DataAccess.Models;
+﻿using CanastaChampions.DataAccess;
+using CanastaChampions.DataAccess.Models;
+using CanastaChampions.DataAccess.Services;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
@@ -36,7 +38,7 @@ namespace MvxCanastaChampions.Core.ViewModels
         public IMvxCommand AddCompetitionCommand { get; set; }
         public IMvxCommand PlayCompetitionCommand { get; set; }
 
-
+        public IMvxCommand ResetDatabaseCommand { get; set; }
 
         public string CompetitionName
         {
@@ -76,20 +78,54 @@ namespace MvxCanastaChampions.Core.ViewModels
             Competitions = new MvxObservableCollection<CompetitionModel>(CompetitionServices.GetAllCompetitions());
             AddCompetitionCommand = new MvxCommand(AddCompetition);
             PlayCompetitionCommand = new MvxCommand(PlayCompetition);
+            ResetDatabaseCommand = new MvxCommand(ResetDatabase);
             _navigationService = navigationService;
+        }
+
+        public void ResetDatabase()
+        {
+            bool loadData = true;
+            _ = new DBInstaller(BaseDataAccess.DB_FILE, loadData);
+
+            if (loadData)
+            {
+                // Create Competitions
+                var burgerComp = CompetitionServices.GetOrCreateCompetition(new CompetitionModel("Burger Empire", true, false));
+                var daveComp = CompetitionServices.GetOrCreateCompetition(new CompetitionModel("Dave's Canasta Regulars", false, true));
+
+                // Add Players
+                var ben = CompetitionServices.GetOrCreatePlayer(new PlayerModel("Ben"));
+                var jen = CompetitionServices.GetOrCreatePlayer(new PlayerModel("Jen"));
+                var nathan = CompetitionServices.GetOrCreatePlayer(new PlayerModel("Nathan"));
+                var danni = CompetitionServices.GetOrCreatePlayer(new PlayerModel("Danni"));
+                var rowan = CompetitionServices.GetOrCreatePlayer(new PlayerModel("Rowan"));
+                var poly = CompetitionServices.GetOrCreatePlayer(new PlayerModel("Poly"));
+                var kitty = CompetitionServices.GetOrCreatePlayer(new PlayerModel("Kitty"));
+                var droot = CompetitionServices.GetOrCreatePlayer(new PlayerModel("Droot"));
+
+                // Register Players to Competition
+                CompetitionServices.RegisterPlayer(burgerComp.CompetitionID, ben.PlayerID);
+                CompetitionServices.RegisterPlayer(burgerComp.CompetitionID, jen.PlayerID);
+                CompetitionServices.RegisterPlayer(burgerComp.CompetitionID, nathan.PlayerID);
+                CompetitionServices.RegisterPlayer(burgerComp.CompetitionID, danni.PlayerID);
+                CompetitionServices.RegisterPlayer(daveComp.CompetitionID, ben.PlayerID);
+                CompetitionServices.RegisterPlayer(daveComp.CompetitionID, jen.PlayerID);
+                CompetitionServices.RegisterPlayer(daveComp.CompetitionID, poly.PlayerID);
+                CompetitionServices.RegisterPlayer(daveComp.CompetitionID, rowan.PlayerID);
+                CompetitionServices.RegisterPlayer(daveComp.CompetitionID, kitty.PlayerID);
+                CompetitionServices.RegisterPlayer(daveComp.CompetitionID, droot.PlayerID);
+
+                // Register Teams
+                CompetitionServices.RegisterTeam(burgerComp.CompetitionID, ben.PlayerID, nathan.PlayerID);
+                CompetitionServices.RegisterTeam(burgerComp.CompetitionID, jen.PlayerID, danni.PlayerID);
+            }
         }
 
         public void AddCompetition()
         {
-            CompetitionModel cm = new CompetitionModel
-            {
-                CompetitionName = CompetitionName,
-                TeamsAreFixed = FixedTeams,
-                TeamsAreRandomised = RandomisedTeams,
-                LogicallyDeleted = false
-            };
+            CompetitionModel cm = new CompetitionModel(CompetitionName, FixedTeams, RandomisedTeams);
 
-            cm = CompetitionServices.CreateCompetition(cm);
+            CompetitionServices.GetOrCreateCompetition(cm);
             Competitions.Add(cm);
         }
 

@@ -15,14 +15,6 @@ namespace MvxCanastaChampions.Core.Services
             => CompetitionDataAccess.GetAllCompetitions(excludeDeleted);
 
         /// <summary>
-        /// Create a new Competition, adding it to the in-memory collection.
-        /// </summary>
-        /// <param name="competitionModel"></param>
-        /// <returns></returns>
-        public static CompetitionModel CreateCompetition(CompetitionModel competitionModel)
-            => CompetitionDataAccess.CreateCompetition(competitionModel);
-
-        /// <summary>
         /// Check to see if a Competition (based on Name) exists.
         /// </summary>
         /// <param name="competitionName"></param>
@@ -52,12 +44,20 @@ namespace MvxCanastaChampions.Core.Services
 
 
         /// <summary>
-        /// Insert a new Competition into the database.
-        /// Once inserted, CompetitionID is populated.
+        /// Create a new Competition.
+        /// Before insertion, checks to see if it exists.
         /// </summary>
         /// <param name="competition"></param>
-        private static void InsertCompetition(CompetitionModel competition)
-            => CompetitionDataAccess.InsertCompetition(competition);
+        /// <returns>Returns the CompetitionModel (with CompetitionID populated) or null if not created.</returns>
+        public static CompetitionModel GetOrCreateCompetition(CompetitionModel competition)
+        {
+            CompetitionModel rValue = CompetitionDataAccess.GetCompetitionByName(competition.CompetitionName);
+
+            if (rValue == null)
+                rValue = CompetitionDataAccess.InsertCompetition(competition);
+
+            return rValue;
+        }
 
         /// <summary>
         /// Get a list of registered Players.
@@ -67,23 +67,63 @@ namespace MvxCanastaChampions.Core.Services
         public static List<PlayerModel> GetRegisteredPlayers(long competitionID)
             => CompetitionDataAccess.GetRegisteredPlayers(competitionID);
 
-        public static List<TeamFormationModel> GetPlayerRoster(long competitionID)
+        /// <summary>
+        /// Get a list of the players for a specific Competition.
+        /// </summary>
+        /// <param name="competition"></param>
+        /// <returns></returns>
+        public static List<GamePlayerModel> GetPlayerRoster(CompetitionModel competition)
         {
-            List<PlayerModel> players = CompetitionDataAccess.GetRegisteredPlayers(competitionID);
+            List<GamePlayerModel> returnList = null;
 
-            List<TeamFormationModel> rValue = new List<TeamFormationModel>(players.Count);
-
-            foreach (PlayerModel p in players)
+            if (competition.TeamsAreFixed)
             {
-                TeamFormationModel tfm = new TeamFormationModel
-                {
-                    PlayerID = p.PlayerID,
-                    PlayerName = p.PlayerName
-                };
-                rValue.Add(tfm);
+                // If teams are fixed, then look for a regular team first.
+                returnList = CompetitionDataAccess.GetRegularTeams(competition.CompetitionID);
             }
+            
+            // If a regular team is not found, then get all the players.
+            if ((competition.TeamsAreRandomised) || (returnList == null))
+            {
+                List<PlayerModel> players = CompetitionDataAccess.GetRegisteredPlayers(competition.CompetitionID);
+                returnList = new List<GamePlayerModel>(players.Count);
+                foreach (PlayerModel p in players)
+                {
+                    GamePlayerModel tfm = new GamePlayerModel
+                    {
+                        CompetitionID = competition.CompetitionID,
+                        PlayerID = p.PlayerID,
+                        PlayerName = p.PlayerName
+                    };
+                    returnList.Add(tfm);
+                }
+            }
+
+            return returnList;
+        }
+
+        /// <summary>
+        /// Create a Player
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public static PlayerModel GetOrCreatePlayer(PlayerModel player)
+        {
+            PlayerModel rValue = CompetitionDataAccess.GetPlayer(player.PlayerName);
+
+            if (rValue == null)
+                rValue = CompetitionDataAccess.InsertPlayer(player);
 
             return rValue;
         }
+
+        public static void RegisterPlayer(long competitionID, long playerID, bool regular = true)
+        {
+
+            CompetitionDataAccess.InsertPlayerToCompetition(competitionID, playerID, regular);
+        }
+
+        public static void RegisterTeam(long competitionID, long player1ID, long player2ID)
+            => CompetitionDataAccess.InsertTeam(competitionID, player1ID, player2ID);
     }
 }

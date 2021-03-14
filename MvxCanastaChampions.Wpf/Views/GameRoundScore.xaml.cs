@@ -1,5 +1,4 @@
-﻿using MvvmCross.Platforms.Wpf.Views;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -15,11 +14,11 @@ using System.Windows.Shapes;
 namespace MvxCanastaChampions.Wpf.Views
 {
     /// <summary>
-    /// Interaction logic for DebugView.xaml
+    /// Interaction logic for GameRoundScore.xaml
     /// </summary>
-    public partial class DebugView : MvxWpfView
+    public partial class GameRoundScore : UserControl
     {
-        public DebugView()
+        public GameRoundScore()
         {
             InitializeComponent();
         }
