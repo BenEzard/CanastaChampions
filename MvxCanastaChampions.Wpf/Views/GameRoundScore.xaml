@@ -70,11 +70,11 @@
         </StackPanel>
 
         <!-- Team Names -->
-        <TextBlock Text="{Binding Team1Name}"
+        <TextBlock Text="{Binding Team1.TeamName}"
             Grid.Column="0" Grid.Row="1" FontSize="20" VerticalAlignment="Center" TextWrapping="Wrap" />
-        <TextBlock Text="{Binding Team2Name}"
+        <TextBlock Text="{Binding Team2.TeamName}"
             Grid.Column="0" Grid.Row="2" FontSize="20" VerticalAlignment="Center" TextWrapping="Wrap" />
-        <TextBlock Text="{Binding Team3Name}"
+        <TextBlock Text="{Binding Team3.TeamName}"
             Grid.Column="0" Grid.Row="3" FontSize="20" VerticalAlignment="Center" TextWrapping="Wrap" />
 
         <!-- Penalty Count -->

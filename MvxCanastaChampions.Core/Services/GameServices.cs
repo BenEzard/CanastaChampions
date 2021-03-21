@@ -55,7 +55,7 @@ namespace MvxCanastaChampions.Core.Services
             }
 
             // Insert the GameTeam record which describes the Teams on a particular Game.
-            GameDataAccess.InsertGameTeam(competitionID, 
+            GameDataAccess.InsertGameTeam(competitionID, gameID, 
                 team1.ElementAt(0).TeamID, 
                 team2.ElementAt(0).TeamID,
                 team3IDValue);
@@ -90,11 +90,11 @@ namespace MvxCanastaChampions.Core.Services
             => GameDataAccess.GetRoundNumber(competitionID, gameID);
 
         /// <summary>
-        /// 
+        /// Get the current and next dealer.
         /// </summary>
         /// <param name="gameID"></param>
         /// <returns></returns>
-        public static (PlayerModel currentDealer, PlayerModel nextDealer) GetDealer(long gameID)
+        public static (GamePlayerModel currentDealer, GamePlayerModel nextDealer) GetDealer(long gameID)
             => GameDataAccess.GetDealer(gameID);
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace MvxCanastaChampions.Core.Services
         {
             // --- Insert a GameRound record
             // Get the dealer
-            (PlayerModel currentDealer, PlayerModel nextDealer) = GetDealer(round.GameID);
+            (GamePlayerModel currentDealer, GamePlayerModel nextDealer) = GetDealer(round.GameID);
             round.Dealer = currentDealer;
 
             // Get the next round number.
@@ -150,5 +150,8 @@ namespace MvxCanastaChampions.Core.Services
         /// <param name="playerID"></param>
         public static void AddRoundCuttingBonus(long competitionID, long gameID, long gameRoundID, long teamID, long playerID)
             => GameDataAccess.InsertRoundCuttingBonus(competitionID, gameID, gameRoundID, teamID, playerID);
+
+        public static List<TeamModel> GetTeams(long competitionID, long gameID)
+            => GameDataAccess.GetTeams(competitionID, gameID);
     }
 }

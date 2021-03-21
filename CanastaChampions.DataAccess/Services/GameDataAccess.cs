@@ -195,6 +195,75 @@ namespace CanastaChampions.DataAccess.Services
         }
 
         /// <summary>
+        /// Get Team information for a specific Game.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <returns></returns>
+        public static List<TeamModel> GetTeams(long competitionID, long gameID)
+        {
+            List<TeamModel> teams = new List<TeamModel>();
+
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "SELECT GameTeamID," +
+                    " Team1ID, Team1Player1ID, Team1Player2ID, Team1Name," +
+                    " Team2ID, Team2Player1ID, Team2Player2ID, Team2Name," +
+                    " Team3ID, Team3Player1ID, Team3Player2ID, Team3Name" +
+                    " FROM vwGameTeam" +
+                    " WHERE CompetitionID = @competitionID" +
+                    " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        long gameTeamID = reader.GetInt64(0);
+                        TeamModel tm = new TeamModel
+                        {
+                            GameTeamID = gameTeamID,
+                            TeamID = reader.GetInt64(1),
+                            TeamPlayer1ID = reader.GetInt64(2),
+                            TeamPlayer2ID = reader.GetInt64(3),
+                            TeamName = reader.GetString(4)
+                        };
+                        teams.Add(tm);
+
+                        tm = new TeamModel
+                        {
+                            GameTeamID = gameTeamID,
+                            TeamID = reader.GetInt64(5),
+                            TeamPlayer1ID = reader.GetInt64(6),
+                            TeamPlayer2ID = reader.GetInt64(7),
+                            TeamName = reader.GetString(8)
+                        };
+                        teams.Add(tm);
+
+                        if (reader.IsDBNull(9) == false)
+                        {
+                            tm = new TeamModel
+                            {
+                                GameTeamID = gameTeamID,
+                                TeamID = reader.GetInt64(9),
+                                TeamPlayer1ID = reader.GetInt64(10),
+                                TeamPlayer2ID = reader.GetInt64(11),
+                                TeamName = reader.GetString(12)
+                            };
+                            teams.Add(tm);
+                        }
+                    }
+                }
+                _conn.Dispose();
+
+                return teams;
+            }
+        }
+
+        /// <summary>
         /// Checks to see if a Team already exists in a given Competition; if so, returns the TeamID.
         /// </summary>
         /// <param name="competitionID"></param>
@@ -266,19 +335,20 @@ namespace CanastaChampions.DataAccess.Services
         /// Insert a GameTeam record, which describes which Teams play.
         /// </summary>
         /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
         /// <param name="team1ID"></param>
         /// <param name="team2ID"></param>
         /// <param name="team3ID"></param>
         /// <returns></returns>
-        public static long InsertGameTeam(long competitionID, long team1ID, long team2ID, long? team3ID)
+        public static long InsertGameTeam(long competitionID, long gameID, long team1ID, long team2ID, long? team3ID)
         {
             long rValue = -1;
 
             _conn = new SQLiteConnection(CONNECTION_STRING);
             _conn.Open();
 
-            string sql = "INSERT INTO GameTeams (CompetitionID, Team1ID, Team2ID, Team3ID)" +
-                        " VALUES (@competitionID, @team1ID, @team2ID, @team3ID)";
+            string sql = "INSERT INTO GameTeams (CompetitionID, GameID, Team1ID, Team2ID, Team3ID)" +
+                        " VALUES (@competitionID, @gameID, @team1ID, @team2ID, @team3ID)";
             if (team3ID.HasValue == false)
             {
                 sql = sql.Replace(", Team3ID", "").Replace(", @team3ID", "");
@@ -288,6 +358,7 @@ namespace CanastaChampions.DataAccess.Services
             {
                 command.CommandText = sql;
                 command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
                 command.Parameters.AddWithValue("@team1ID", team1ID);
                 command.Parameters.AddWithValue("@team2ID", team2ID);
 
@@ -309,17 +380,18 @@ namespace CanastaChampions.DataAccess.Services
         /// </summary>
         /// <param name="gameID"></param>
         /// <returns></returns>
-        public static (PlayerModel currentDealer, PlayerModel nextDealer) GetDealer(long gameID)
+        public static (GamePlayerModel currentDealer, GamePlayerModel nextDealer) GetDealer(long gameID)
         {
-            PlayerModel currentDealer = null;
-            PlayerModel nextDealer = null;
+            GamePlayerModel currentDealer = null;
+            GamePlayerModel nextDealer = null;
 
             _conn = new SQLiteConnection(CONNECTION_STRING);
             _conn.Open();
 
             using (SQLiteCommand command = _conn.CreateCommand())
             {
-                command.CommandText = "SELECT CurrentDealerPlayerID, CurrentDealer_Name, NextDealerPlayerID, NextDealer_Name" +
+                command.CommandText = "SELECT GameID, CurrentDealerPlayerID, CurrentDealer_Name, CurrentDealer_TeamNumber," +
+                    " NextDealerPlayerID, NextDealer_Name, NextDealer_TeamNumber" +
                     " FROM vwCurrentAndNextDealer" +
                     " WHERE GameID = @gameID";
                 command.Parameters.AddWithValue("@gameID", gameID);
@@ -327,16 +399,20 @@ namespace CanastaChampions.DataAccess.Services
                 {
                     while (reader.Read())
                     {
-                        currentDealer = new PlayerModel
+                        currentDealer = new GamePlayerModel
                         {
-                            PlayerID = reader.GetInt32(0),
-                            PlayerName = reader.GetString(1)
+                            GameID = reader.GetInt32(0),
+                            PlayerID = reader.GetInt32(1),
+                            PlayerName = reader.GetString(2),
+                            TeamNumber = reader.GetInt32(3)
                         };
 
-                        nextDealer = new PlayerModel
+                        nextDealer = new GamePlayerModel
                         {
-                            PlayerID = reader.GetInt32(2),
-                            PlayerName = reader.GetString(3)
+                            GameID = reader.GetInt32(0),
+                            PlayerID = reader.GetInt32(4),
+                            PlayerName = reader.GetString(5),
+                            TeamNumber = reader.GetInt32(6)
                         };
                     }
                 }

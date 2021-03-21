@@ -91,6 +91,8 @@ namespace MvxCanastaChampions.Core.Services
 
         /// <summary>
         /// Return Team and Player information about Competitions with regular teams.
+        /// Records are sorted so that by default the players are not sitting next to Team mates. 
+        /// (The user may still need to adjust seating positions).
         /// (Note that GamePlayerModel.TeamNumber is a consecutive number and NOT a database ID).
         /// </summary>
         /// <param name="competitionID"></param>
@@ -113,54 +115,59 @@ namespace MvxCanastaChampions.Core.Services
                 command.Parameters.AddWithValue("@competitionID", competitionID);
 
                 SQLiteDataReader reader = command.ExecuteReader();
-                int teamNumber = 1;
 
                 if (reader.HasRows)
                 {
                     rValue = new List<GamePlayerModel>();
                     while (reader.Read())
                     {
-                        // Team 1
+                        // Team 1, Player 1
                         long gameTeamID = reader.GetInt64(1);
-                        GamePlayerModel gpm = new GamePlayerModel(competitionID, teamNumber);
+                        GamePlayerModel gpm = new GamePlayerModel(competitionID, 1);
                         gpm.TeamID = gameTeamID;
                         gpm.PlayerID = reader.GetInt64(2);
                         gpm.PlayerName = reader.GetString(3);
                         rValue.Add(gpm);
 
-                        gpm = new GamePlayerModel(competitionID, teamNumber);
-                        gpm.TeamID = gameTeamID;
-                        gpm.PlayerID = reader.GetInt64(4);
-                        gpm.PlayerName = reader.GetString(5);
-                        rValue.Add(gpm);
-                        ++teamNumber;
 
-                        // Team 2
+                        // Team 2, Player 1
                         gameTeamID = reader.GetInt64(6);
-                        gpm = new GamePlayerModel(competitionID, teamNumber);
+                        gpm = new GamePlayerModel(competitionID, 2);
                         gpm.TeamID = gameTeamID;
                         gpm.PlayerID = reader.GetInt64(7);
                         gpm.PlayerName = reader.GetString(8);
                         rValue.Add(gpm);
 
-                        gpm = new GamePlayerModel(competitionID, teamNumber);
-                        gpm.TeamID = gameTeamID;
-                        gpm.PlayerID = reader.GetInt64(9);
-                        gpm.PlayerName = reader.GetString(10);
-                        rValue.Add(gpm);
-                        ++teamNumber;
-
+                        // Team 3, Player 1
                         if (reader.IsDBNull(11) == false)
                         {
                             // Team 3
                             gameTeamID = reader.GetInt64(11);
-                            gpm = new GamePlayerModel(competitionID, teamNumber);
+                            gpm = new GamePlayerModel(competitionID, 3);
                             gpm.TeamID = gameTeamID;
                             gpm.PlayerID = reader.GetInt64(12);
                             gpm.PlayerName = reader.GetString(13);
                             rValue.Add(gpm);
+                        }
 
-                            gpm = new GamePlayerModel(competitionID, teamNumber);
+                        // Team 1, Player 2
+                        gpm = new GamePlayerModel(competitionID, 1);
+                        gpm.TeamID = gameTeamID;
+                        gpm.PlayerID = reader.GetInt64(4);
+                        gpm.PlayerName = reader.GetString(5);
+                        rValue.Add(gpm);
+
+                        // Team 2, Player 2
+                        gpm = new GamePlayerModel(competitionID, 2);
+                        gpm.TeamID = gameTeamID;
+                        gpm.PlayerID = reader.GetInt64(9);
+                        gpm.PlayerName = reader.GetString(10);
+                        rValue.Add(gpm);
+
+                        // Team 3, Player 2
+                        if (reader.IsDBNull(11) == false)
+                        {
+                            gpm = new GamePlayerModel(competitionID, 3);
                             gpm.TeamID = gameTeamID;
                             gpm.PlayerID = reader.GetInt64(15);
                             gpm.PlayerName = reader.GetString(16);

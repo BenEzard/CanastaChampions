@@ -18,7 +18,7 @@ namespace CanastaChampions.DataAccess.Models
         public DateTime RoundStartDateTime { get; set; }
         public DateTime RoundEndDateTime { get; set; }
 
-        public PlayerModel Dealer { get; set; }
+        public GamePlayerModel Dealer { get; set; }
         public long WinningTeamID { get; set; }
     }
 }

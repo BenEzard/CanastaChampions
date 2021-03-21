@@ -2,68 +2,69 @@
 using MvvmCross.Commands;
 using MvvmCross.ViewModels;
 using MvxCanastaChampions.Core.Services;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MvxCanastaChampions.Core.ViewModels
 {
-    public class GameRoundScoreViewModel : MvxViewModel<List<GamePlayerModel>>
+    public class GameRoundScoreViewModel : MvxViewModel<RoundModel>
     {
-        private long _competitionID = -1;
-        private long _gameID = -1;
-        private long _gameRoundID = -1;
-
-
-        #region teamNames
-        private string _team1Name;
-
-        public string Team1Name
+        private RoundModel _gameRound;
+        public RoundModel GameRound
         {
-            get { return _team1Name; }
-            set { 
-                _team1Name = value;
-                SetProperty(ref _team1Name, value);
-            }
-        }
-
-        private string _team2Name;
-
-        public string Team2Name
-        {
-            get { return _team2Name; }
+            get => _gameRound;
             set
             {
-                _team2Name = value;
-                SetProperty(ref _team2Name, value);
+                _gameRound = value;
+                SetProperty(ref _gameRound, value);
             }
         }
 
-        private string _team3Name;
-
-        public string Team3Name
-        {
-            get { return _team3Name; }
-            set
-            {
-                _team3Name = value;
-                SetProperty(ref _team3Name, value);
-                RaisePropertyChanged(() => IsTeam3Playing);
-            }
-        }
-
+        private bool _isTeam3Playing = false;
         public bool IsTeam3Playing
         {
-            get => (String.IsNullOrEmpty(_team3Name)) ? false : true;
+            get => _isTeam3Playing;
+            set
+            {
+                _isTeam3Playing = value;
+                SetProperty(ref _isTeam3Playing, value);
+            }
         }
-        #endregion
 
-        #region
-        private long _team1ID = -1;
-        private long _team2ID = -1;
-        private long _team3ID = -1;
-        #endregion
+        private TeamModel _team1;
+
+        public TeamModel Team1
+        {
+            get { return _team1; }
+            set { 
+                _team1 = value;
+                SetProperty(ref _team1, value);
+            }
+        }
+
+        private TeamModel _team2;
+
+        public TeamModel Team2
+        {
+            get { return _team2; }
+            set
+            {
+                _team2 = value;
+                SetProperty(ref _team2, value);
+            }
+        }
+
+        private TeamModel _team3;
+
+        public TeamModel Team3
+        {
+            get { return _team3; }
+            set
+            {
+                _team3 = value;
+                SetProperty(ref _team3, value);
+            }
+        }
+
 
         #region NaturalCanasta
         private int _team1NaturalCanastaCount = 0;
@@ -236,7 +237,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             set { 
                 _cuttingBonus = value;
                 SetProperty(ref _cuttingBonus, value);
-                switch (DealerTeam)
+                switch (GameRound?.Dealer?.TeamNumber)
                 {
                     case 0:
                         break;
@@ -371,29 +372,19 @@ namespace MvxCanastaChampions.Core.ViewModels
 
         #endregion
 
-        private int _dealerTeam = 0;
-        public int DealerTeam
-        {
-            get => _dealerTeam;
-            set
-            {
-                _dealerTeam = value;
-                SetProperty(ref _dealerTeam, value);
-            }
-        }
-
         public IMvxCommand ScoringCompletedCommand { get; set; }
 
         public void CompleteScoring()
         {
             // Insert scores for each team.
-            GameServices.AddTeamRoundScore(_competitionID, _gameID, _gameRoundID, _team1ID, Team1NaturalCanastaCount, Team1UnnaturalCanastaCount, Team1Red3Count, Team1PointsOnHand);
-            GameServices.AddTeamRoundScore(_competitionID, _gameID, _gameRoundID, _team2ID, Team2NaturalCanastaCount, Team2UnnaturalCanastaCount, Team2Red3Count, Team2PointsOnHand);
-            GameServices.AddTeamRoundScore(_competitionID, _gameID, _gameRoundID, _team3ID, Team3NaturalCanastaCount, Team3UnnaturalCanastaCount, Team3Red3Count, Team3PointsOnHand);
+            GameServices.AddTeamRoundScore(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team1.TeamID, Team1NaturalCanastaCount, Team1UnnaturalCanastaCount, Team1Red3Count, Team1PointsOnHand);
+            GameServices.AddTeamRoundScore(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team2.TeamID, Team2NaturalCanastaCount, Team2UnnaturalCanastaCount, Team2Red3Count, Team2PointsOnHand);
+            GameServices.AddTeamRoundScore(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team3.TeamID, Team3NaturalCanastaCount, Team3UnnaturalCanastaCount, Team3Red3Count, Team3PointsOnHand);
 
             // Insert Cutting Bonus (if applicable)
-            /*if (CuttingBonus)
-                GameServices.AddRoundCuttingBonus(_competitionID, _gameID, _gameRoundID, DealerTeam, Dea)*/
+            if (CuttingBonus)
+                GameServices.AddRoundCuttingBonus(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, 
+                    GameRound.Dealer.TeamID, GameRound.Dealer.PlayerID);
         }
 
         public GameRoundScoreViewModel()
@@ -401,57 +392,25 @@ namespace MvxCanastaChampions.Core.ViewModels
             ScoringCompletedCommand =  new MvxCommand(CompleteScoring);
         }
 
-        public override void Prepare(List<GamePlayerModel> parameter)
+        public override void Prepare(RoundModel parameter)
         {
-            IEnumerable<GamePlayerModel> team = parameter.Where(x => x.TeamNumber == 1);
-            Team1Name = $"{team.ElementAt(0).PlayerName} & {team.ElementAt(1).PlayerName}";
-            _team1ID = team.ElementAt(0).TeamID;
-            
-            _competitionID = team.ElementAt(0).CompetitionID;
-            _gameID = team.ElementAt(0).GameID;
-            _gameRoundID = GameServices.GetRoundNumber(_competitionID, _gameID);
+            GameRound = parameter;
+            System.Diagnostics.Debug.WriteLine($"==> Dealer is {GameRound.Dealer.PlayerName} on Team {GameRound.Dealer.TeamNumber}");
 
+            List<TeamModel> teams = GameServices.GetTeams(GameRound.CompetitionID, GameRound.GameID);
 
-            team = parameter.Where(x => x.TeamNumber == 2);
-            Team2Name = $"{team.ElementAt(0).PlayerName} & {team.ElementAt(1).PlayerName}";
-            _team2ID = team.ElementAt(0).TeamID;
+            Team1 = teams[0];
+            Team2 = teams[1];
 
-            team = parameter.Where(x => x.TeamNumber == 3);
-            if (team.Count() > 0)
-            {
-                Team3Name = $"{team.ElementAt(0).PlayerName} & {team.ElementAt(1).PlayerName}";
-                _team3ID = team.ElementAt(0).TeamID;
-            }
+            if (teams.Count > 2)
+                Team3 = teams[2];
 
             // Load Penalties
-            Team1PenaltyCount = GameServices.GetTeamPenaltyCount(_competitionID, _gameID, _gameRoundID, _team1ID);
-            Team2PenaltyCount = GameServices.GetTeamPenaltyCount(_competitionID, _gameID, _gameRoundID, _team1ID);
-            Team3PenaltyCount = GameServices.GetTeamPenaltyCount(_competitionID, _gameID, _gameRoundID, _team1ID);
+            Team1PenaltyCount = GameServices.GetTeamPenaltyCount(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team1.TeamID);
+            Team2PenaltyCount = GameServices.GetTeamPenaltyCount(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team2.TeamID);
 
-            // Get Dealer
-            (PlayerModel dealer, _) = GameServices.GetDealer(_gameID);
-            DealerTeam = IsOnTeam(dealer);
-
-        }
-
-        /// <summary>
-        /// Return the team where the player name is found.
-        /// TODO NOTE this means that player's names must be unique within a game.
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
-        public int IsOnTeam(PlayerModel player)
-        {
-            int rValue = 0;
-
-            if (Team1Name.Contains(player.PlayerName))
-                rValue = 1;
-            else if (Team2Name.Contains(player.PlayerName))
-                rValue = 2;
-            else if (Team3Name.Contains(player.PlayerName))
-                rValue = 3;
-
-            return rValue;
+            if (IsTeam3Playing)
+                Team3PenaltyCount = GameServices.GetTeamPenaltyCount(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team3.TeamID);
         }
 
         public int CalculateScore(int teamNumber)
@@ -518,7 +477,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             if (finishingBonus)
                 totalScore += 100;
 
-            if (CuttingBonus && teamNumber == DealerTeam)
+            if (CuttingBonus && teamNumber == GameRound.Dealer.TeamNumber)
                 totalScore += 100;
 
             return totalScore;

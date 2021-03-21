@@ -205,7 +205,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             RaisePropertyChanged(() => IsStartRoundButtonAvailable);
             RaisePropertyChanged(() => IsEndRoundButtonAvailable);
 
-            _navigationService.Navigate<GameRoundScoreViewModel, List<GamePlayerModel>>(_gamePlayers);
+            _navigationService.Navigate<GameRoundScoreViewModel, RoundModel>(GameRound);
         }
         #endregion 
 
@@ -297,7 +297,7 @@ namespace MvxCanastaChampions.Core.ViewModels
                     $" GameTeamID = {Team3Player2.TeamID} Team Number = {Team3Player2.TeamNumber}");
             }
 
-            (PlayerModel currentDealer, PlayerModel nextDealer) = GameServices.GetDealer(_gameID);
+            (GamePlayerModel currentDealer, GamePlayerModel _) = GameServices.GetDealer(_gameID);
             GameRound.Dealer = currentDealer;
         }
 
