@@ -1,5 +1,6 @@
 ﻿using CanastaChampions.DataAccess.Models;
 using MvvmCross.Commands;
+using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using MvxCanastaChampions.Core.Services;
 using System;
@@ -11,10 +12,12 @@ namespace MvxCanastaChampions.Core.ViewModels
 {
     public class GameViewModel : MvxViewModel<List<GamePlayerModel>>
     {
+        private readonly IMvxNavigationService _navigationService;
+
         #region Team1Members
         private GamePlayerModel _team1Member1;
 
-        public GamePlayerModel Team1Member1
+        public GamePlayerModel Team1Player1
         {
             get { return _team1Member1; }
             set { 
@@ -25,7 +28,7 @@ namespace MvxCanastaChampions.Core.ViewModels
 
         private GamePlayerModel _team1Member2;
 
-        public GamePlayerModel Team1Member2
+        public GamePlayerModel Team1Player2
         {
             get { return _team1Member2; }
             set
@@ -37,60 +40,69 @@ namespace MvxCanastaChampions.Core.ViewModels
         #endregion
 
         #region Team2Members
-        private GamePlayerModel _team2Member1;
+        private GamePlayerModel _team2Player1;
 
-        public GamePlayerModel Team2Member1
+        public GamePlayerModel Team2Player1
         {
-            get { return _team2Member1; }
+            get { return _team2Player1; }
             set
             {
-                _team2Member1 = value;
-                SetProperty(ref _team2Member1, value);
+                _team2Player1 = value;
+                SetProperty(ref _team2Player1, value);
             }
         }
 
-        private GamePlayerModel _team2Member2;
+        private GamePlayerModel _team2Player2;
 
-        public GamePlayerModel Team2Member2
+        public GamePlayerModel Team2Player2
         {
-            get { return _team2Member2; }
+            get { return _team2Player2; }
             set
             {
-                _team2Member2 = value;
-                SetProperty(ref _team2Member2, value);
+                _team2Player2 = value;
+                SetProperty(ref _team2Player2, value);
             }
         }
         #endregion
 
         #region Team3Members
-        private GamePlayerModel _team3Member1;
-
-        public GamePlayerModel Team3Member1
-        {
-            get { return _team3Member1; }
-            set
-            {
-                _team3Member1 = value;
-                SetProperty(ref _team3Member1, value);
-                RaisePropertyChanged(() => IsTeam3Utilised);
-            }
-        }
-
-        private GamePlayerModel _team3Member2;
-
-        public GamePlayerModel Team3Member2
-        {
-            get { return _team3Member2; }
-            set
-            {
-                _team3Member2 = value;
-                SetProperty(ref _team3Member2, value);
-                RaisePropertyChanged(() => IsTeam3Utilised);
-            }
-        }
+        private bool _isTeam3Utilised = false;
 
         public bool IsTeam3Utilised
-            => (_team3Member1 == null) ? true : false;
+        {
+            get => _isTeam3Utilised;
+            set
+            {
+                _isTeam3Utilised = value;
+                SetProperty(ref _isTeam3Utilised, value);
+            }
+        }
+
+        private GamePlayerModel _team3Player1;
+
+        public GamePlayerModel Team3Player1
+        {
+            get { return _team3Player1; }
+            set
+            {
+                _team3Player1 = value;
+                SetProperty(ref _team3Player1, value);
+                IsTeam3Utilised = true;
+            }
+        }
+
+        private GamePlayerModel _team3Player2;
+
+        public GamePlayerModel Team3Player2
+        {
+            get { return _team3Player2; }
+            set
+            {
+                _team3Player2 = value;
+                SetProperty(ref _team3Player2, value);
+                IsTeam3Utilised = true;
+            }
+        }
         #endregion
 
         private long _competitionID;
@@ -127,23 +139,19 @@ namespace MvxCanastaChampions.Core.ViewModels
             if (team.ElementAt(0).GameID != -1)
                 _gameID = team.ElementAt(0).GameID;
 
-            Team1Member1 = team.ElementAt(0);
-            Team1Member2 = team.ElementAt(1);
+            Team1Player1 = team.ElementAt(0);
+            Team1Player2 = team.ElementAt(1);
 
             team = parameter.Where(x => x.TeamNumber == 2);
-            Team2Member1 = team.ElementAt(0);
-            Team2Member2 = team.ElementAt(1);
+            Team2Player1 = team.ElementAt(0);
+            Team2Player2 = team.ElementAt(1);
+
 
             team = parameter.Where(x => x.TeamNumber == 3);
             if (team.Count() > 0)
             {
-                Team3Member1 = team.ElementAt(0);
-                Team3Member2 = team.ElementAt(1);
-            }
-            else
-            {
-                Team3Member1 = null;
-                Team3Member2 = null;
+                Team3Player1 = team.ElementAt(0);
+                Team3Player2 = team.ElementAt(1);
             }
         }
 
@@ -171,6 +179,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             }
         }
 
+        #region StartRoundCommand
         public IMvxCommand StartRoundCommand { get; set; }
 
         public void StartRound()
@@ -184,7 +193,9 @@ namespace MvxCanastaChampions.Core.ViewModels
             RaisePropertyChanged(() => IsStartRoundButtonAvailable);
             RaisePropertyChanged(() => IsEndRoundButtonAvailable);
         }
+        #endregion
 
+        #region EndRoundCommand
         public IMvxCommand EndRoundCommand { get; set; }
 
         public void EndRound()
@@ -193,7 +204,40 @@ namespace MvxCanastaChampions.Core.ViewModels
 
             RaisePropertyChanged(() => IsStartRoundButtonAvailable);
             RaisePropertyChanged(() => IsEndRoundButtonAvailable);
+
+            _navigationService.Navigate<GameRoundScoreViewModel, List<GamePlayerModel>>(_gamePlayers);
         }
+        #endregion 
+
+        public IMvxCommand Team1Player1PenaltyCommand { get; set; }
+
+        public void Team1Player1Penalty()
+            => GameServices.AddPlayerPenalty(Team1Player1, _round.GameRoundID);
+
+        public IMvxCommand Team1Player2PenaltyCommand { get; set; }
+
+        public void Team1Player2Penalty()
+            => GameServices.AddPlayerPenalty(Team1Player2, _round.GameRoundID);
+
+        public IMvxCommand Team2Player1PenaltyCommand { get; set; }
+
+        public void Team2Player1Penalty()
+            => GameServices.AddPlayerPenalty(Team2Player1, _round.GameRoundID);
+
+        public IMvxCommand Team2Player2PenaltyCommand { get; set; }
+
+        public void Team2Player2Penalty()
+            => GameServices.AddPlayerPenalty(Team2Player2, _round.GameRoundID);
+
+        public IMvxCommand Team3Player1PenaltyCommand { get; set; }
+
+        public void Team3Player1Penalty()
+            => GameServices.AddPlayerPenalty(Team3Player1, _round.GameRoundID);
+
+        public IMvxCommand Team3Player2PenaltyCommand { get; set; }
+
+        public void Team3Player2Penalty()
+            => GameServices.AddPlayerPenalty(Team3Player2, _round.GameRoundID);
 
         public bool IsEndRoundButtonAvailable
             => GameRound.GameRoundID == -1 ? false : true;
@@ -201,10 +245,17 @@ namespace MvxCanastaChampions.Core.ViewModels
         public bool IsStartRoundButtonAvailable
             => GameRound.GameRoundID == -1 ? true : false;
 
-        public GameViewModel()
+        public GameViewModel(IMvxNavigationService navigationService)
         {
+            _navigationService = navigationService;
             StartRoundCommand = new MvxCommand(StartRound);
             EndRoundCommand = new MvxCommand(EndRound);
+            Team1Player1PenaltyCommand = new MvxCommand(Team1Player1Penalty);
+            Team1Player2PenaltyCommand = new MvxCommand(Team1Player2Penalty);            
+            Team2Player1PenaltyCommand = new MvxCommand(Team2Player1Penalty);
+            Team2Player2PenaltyCommand = new MvxCommand(Team2Player2Penalty);            
+            Team3Player1PenaltyCommand = new MvxCommand(Team3Player1Penalty);
+            Team3Player2PenaltyCommand = new MvxCommand(Team3Player2Penalty);
         }
 
         public void StartGame()
@@ -218,6 +269,33 @@ namespace MvxCanastaChampions.Core.ViewModels
                 gamePlayers: _gamePlayers);
 
             UnPackParameterVariable(playerList);
+            System.Diagnostics.Debug.WriteLine($"UnPackParameterVariable Team1Player1: " +
+                $"CompetitionID = {Team1Player1.PlayerName} (PlayerID = {Team1Player1.PlayerID}); " +
+                $"{Team1Player1.CompetitionID}; GameID = {Team1Player1.GameID}; " +
+                $" GameTeamID = {Team1Player1.TeamID} Team Number = {Team1Player1.TeamNumber}");
+            System.Diagnostics.Debug.WriteLine($"UnPackParameterVariable Team1Player2: " +
+                $"CompetitionID = {Team1Player2.PlayerName} (PlayerID = {Team1Player2.PlayerID}); " +
+                $"{Team1Player2.CompetitionID}; GameID = {Team1Player2.GameID}; " +
+                $" GameTeamID = {Team1Player2.TeamID} Team Number = {Team1Player2.TeamNumber}");
+            System.Diagnostics.Debug.WriteLine($"UnPackParameterVariable Team2Player1: " +
+                $"CompetitionID = {Team2Player1.PlayerName} (PlayerID = {Team2Player1.PlayerID}); " +
+                $"{Team2Player1.CompetitionID}; GameID = {Team2Player1.GameID}; " +
+                $" GameTeamID = {Team2Player1.TeamID} Team Number = {Team2Player1.TeamNumber}");
+            System.Diagnostics.Debug.WriteLine($"UnPackParameterVariable Team2Player2: " +
+                $"CompetitionID = {Team2Player2.PlayerName} (PlayerID = {Team2Player2.PlayerID}); " +
+                $"{Team2Player2.CompetitionID}; GameID = {Team2Player2.GameID}; " +
+                $" GameTeamID = {Team2Player2.TeamID} Team Number = {Team2Player2.TeamNumber}"); 
+            if (_isTeam3Utilised)
+            {
+                System.Diagnostics.Debug.WriteLine($"UnPackParameterVariable Team3Player1: " +
+                    $"CompetitionID = {Team3Player1.PlayerName} (PlayerID = {Team3Player1.PlayerID}); " +
+                    $"{Team3Player1.CompetitionID}; GameID = {Team3Player1.GameID}; " +
+                    $" GameTeamID = {Team3Player1.TeamID} Team Number = {Team3Player1.TeamNumber}");
+                System.Diagnostics.Debug.WriteLine($"UnPackParameterVariable Team2Player2: " +
+                    $"CompetitionID = {Team3Player2.PlayerName} (PlayerID = {Team3Player2.PlayerID}); " +
+                    $"{Team3Player2.CompetitionID}; GameID = {Team3Player2.GameID}; " +
+                    $" GameTeamID = {Team3Player2.TeamID} Team Number = {Team3Player2.TeamNumber}");
+            }
 
             (PlayerModel currentDealer, PlayerModel nextDealer) = GameServices.GetDealer(_gameID);
             GameRound.Dealer = currentDealer;

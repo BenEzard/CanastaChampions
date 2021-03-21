@@ -72,6 +72,34 @@ namespace CanastaChampions.DataAccess.Services
             }
         }
 
+        public static int GetRoundNumber(long competitionID, long gameID)
+        {
+            int thisRoundNumber = 1;
+
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "SELECT ThisRoundNumber" +
+                    " FROM vwGetRoundNumber" +
+                    " WHERE CompetitionID = @competitionID" +
+                    " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        thisRoundNumber = reader.GetInt32(0);
+                    }
+                }
+                _conn.Dispose();
+
+                return thisRoundNumber;
+            }
+        }
+
         /// <summary>
         /// Insert a new Game record.
         /// This method automatically calculates the next consecutive Game number within the Competition.
@@ -316,6 +344,137 @@ namespace CanastaChampions.DataAccess.Services
 
             _conn.Dispose();
             return (currentDealer, nextDealer);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <param name="gameRoundID"></param>
+        /// <param name="teamID"></param>
+        /// <param name="playerID"></param>
+        /// <param name="penaltyCount"></param>
+        public static void InsertScorePenalty(long competitionID, long gameID, long gameRoundID, long teamID, 
+            long playerID, int penaltyCount = 1)
+        {
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "INSERT INTO GameRoundScoreDetails (CompetitionID, GameID, GameRoundID, TeamID, PlayerID, PenaltyCount)" +
+                        " VALUES (@competitionID, @gameID, @gameRoundID, @teamID, @playerID, @penaltyCount)";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.Parameters.AddWithValue("@gameRoundID", gameRoundID);
+                command.Parameters.AddWithValue("@teamID", teamID);
+                command.Parameters.AddWithValue("@playerID", playerID);
+                command.Parameters.AddWithValue("@penaltyCount", penaltyCount);
+                command.ExecuteNonQuery();
+            }
+
+            _conn.Dispose();
+        }
+
+        public static int GetTeamPenaltyCount(long competitionID, long gameID, long roundID, long teamID)
+        {
+            int rValue = 0;
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "SELECT SUM(PenaltyCount) AS PenaltyCount" +
+                    " FROM GameRoundScoreDetails" +
+                    " WHERE CompetitionID = @competitionID" +
+                    " AND GameID = @gameID" +
+                    " AND GameRoundID = @gameRoundID" +
+                    " AND TeamID = @teamID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.Parameters.AddWithValue("@gameRoundID", roundID);
+                command.Parameters.AddWithValue("@teamID", teamID);
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            if (reader.IsDBNull(0) == false)
+                                rValue = reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+
+            _conn.Dispose();
+            return rValue;
+        }
+
+        /// <summary>
+        /// Insert a Round score tally for a Team.
+        /// Note: this doesn't include penalties, cutting bonus or finishing bonus which are added via their own methods.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <param name="gameRoundID"></param>
+        /// <param name="teamID"></param>
+        /// <param name="naturalCanastaCount"></param>
+        /// <param name="unnaturalCanastaCount"></param>
+        /// <param name="redThreeCount"></param>
+        /// <param name="pointsInHand"></param>
+        public static void InsertRoundScoreTally(long competitionID, long gameID, long gameRoundID, long teamID,
+            int naturalCanastaCount, int unnaturalCanastaCount, int redThreeCount, int pointsInHand)
+        {
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "INSERT INTO GameRoundScoreDetails (CompetitionID, GameID, GameRoundID, TeamID," +
+                    " NaturalCanastaCount, UnnaturalCanastaCount, RedThreeCount, PointsOnHand)" +
+                        " VALUES (@competitionID, @gameID, @gameRoundID, @teamID, @natural, @unnatural, @redThree, @points)";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.Parameters.AddWithValue("@gameRoundID", gameRoundID);
+                command.Parameters.AddWithValue("@teamID", teamID);
+                command.Parameters.AddWithValue("@natural", naturalCanastaCount);
+                command.Parameters.AddWithValue("@unnatural", unnaturalCanastaCount);
+                command.Parameters.AddWithValue("@redThree", redThreeCount);
+                command.Parameters.AddWithValue("@points", pointsInHand);
+                command.ExecuteNonQuery();
+            }
+
+            _conn.Dispose();
+        }
+
+        /// <summary>
+        /// Insert a Round's cutting bonus to a specific Player.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <param name="gameRoundID"></param>
+        /// <param name="teamID"></param>
+        /// <param name="playerID"></param>
+        public static void InsertRoundCuttingBonus(long competitionID, long gameID, long gameRoundID, long teamID, long playerID)
+        {
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "INSERT INTO GameRoundScoreDetails (CompetitionID, GameID, GameRoundID, TeamID, PlayerID, CuttingBonusCount)" +
+                        " VALUES (@competitionID, @gameID, @gameRoundID, @teamID, @playerID, 1)";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.Parameters.AddWithValue("@gameRoundID", gameRoundID);
+                command.Parameters.AddWithValue("@teamID", teamID);
+                command.Parameters.AddWithValue("@playerID", playerID);
+                command.ExecuteNonQuery();
+            }
+
+            _conn.Dispose();
         }
     }
 }

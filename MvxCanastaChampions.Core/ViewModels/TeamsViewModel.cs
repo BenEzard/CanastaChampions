@@ -174,6 +174,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             foreach (GamePlayerModel m in TeamFormationList)
             {
                 teams.Add(m);
+                System.Diagnostics.Debug.WriteLine($"GamePlayerModel entry: CompetitionID = {m.PlayerName} (PlayerID = {m.PlayerID}); {m.CompetitionID}; GameID = {m.GameID}; GameTeamID = {m.TeamID} Team Number = {m.TeamNumber}");
             }
 
             _navigationService.Navigate<GameViewModel, List<GamePlayerModel>>(teams);

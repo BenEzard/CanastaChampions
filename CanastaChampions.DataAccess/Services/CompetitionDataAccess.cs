@@ -123,13 +123,13 @@ namespace MvxCanastaChampions.Core.Services
                         // Team 1
                         long gameTeamID = reader.GetInt64(1);
                         GamePlayerModel gpm = new GamePlayerModel(competitionID, teamNumber);
-                        gpm.GameTeamID = gameTeamID;
+                        gpm.TeamID = gameTeamID;
                         gpm.PlayerID = reader.GetInt64(2);
                         gpm.PlayerName = reader.GetString(3);
                         rValue.Add(gpm);
 
                         gpm = new GamePlayerModel(competitionID, teamNumber);
-                        gpm.GameTeamID = gameTeamID;
+                        gpm.TeamID = gameTeamID;
                         gpm.PlayerID = reader.GetInt64(4);
                         gpm.PlayerName = reader.GetString(5);
                         rValue.Add(gpm);
@@ -138,13 +138,13 @@ namespace MvxCanastaChampions.Core.Services
                         // Team 2
                         gameTeamID = reader.GetInt64(6);
                         gpm = new GamePlayerModel(competitionID, teamNumber);
-                        gpm.GameTeamID = gameTeamID;
+                        gpm.TeamID = gameTeamID;
                         gpm.PlayerID = reader.GetInt64(7);
                         gpm.PlayerName = reader.GetString(8);
                         rValue.Add(gpm);
 
                         gpm = new GamePlayerModel(competitionID, teamNumber);
-                        gpm.GameTeamID = gameTeamID;
+                        gpm.TeamID = gameTeamID;
                         gpm.PlayerID = reader.GetInt64(9);
                         gpm.PlayerName = reader.GetString(10);
                         rValue.Add(gpm);
@@ -155,13 +155,13 @@ namespace MvxCanastaChampions.Core.Services
                             // Team 3
                             gameTeamID = reader.GetInt64(11);
                             gpm = new GamePlayerModel(competitionID, teamNumber);
-                            gpm.GameTeamID = gameTeamID;
+                            gpm.TeamID = gameTeamID;
                             gpm.PlayerID = reader.GetInt64(12);
                             gpm.PlayerName = reader.GetString(13);
                             rValue.Add(gpm);
 
                             gpm = new GamePlayerModel(competitionID, teamNumber);
-                            gpm.GameTeamID = gameTeamID;
+                            gpm.TeamID = gameTeamID;
                             gpm.PlayerID = reader.GetInt64(15);
                             gpm.PlayerName = reader.GetString(16);
                             rValue.Add(gpm);

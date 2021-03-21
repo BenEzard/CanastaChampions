@@ -10,10 +10,7 @@ namespace CanastaChampions.DataAccess.Models
 
         public long GameID { get; set; }
 
-        /// <summary>
-        /// The ID relates to GameTeams.GameTeamID
-        /// </summary>
-        public long GameTeamID { get; set; } = -1;
+         public long TeamID { get; set; } = -1;
 
         public long PlayerID { get; set; }
 

@@ -36,12 +36,12 @@ namespace MvxCanastaChampions.Core.Services
             /// Check to see if Teams need to be saved 
             /// (i.e. the first time that two players have played together in a Competition).
             long teamID = GameDataAccess.GetOrInsertTeamID(competitionID, team1.ElementAt(0).PlayerID, team1.ElementAt(1).PlayerID);
-            if ((team1.ElementAt(0).GameTeamID == -1) || (team1.ElementAt(1).GameTeamID == -1))
-                team1.ToList().ForEach(u => u.GameTeamID = teamID);
+            if ((team1.ElementAt(0).TeamID == -1) || (team1.ElementAt(1).TeamID == -1))
+                team1.ToList().ForEach(u => u.TeamID = teamID);
 
             teamID = GameDataAccess.GetOrInsertTeamID(competitionID, team2.ElementAt(0).PlayerID, team2.ElementAt(1).PlayerID);
-            if ((team2.ElementAt(0).GameTeamID == -1) || (team2.ElementAt(1).GameTeamID == -1))
-                team2.ToList().ForEach(u => u.GameTeamID = teamID);
+            if ((team2.ElementAt(0).TeamID == -1) || (team2.ElementAt(1).TeamID == -1))
+                team2.ToList().ForEach(u => u.TeamID = teamID);
 
             long? team3IDValue = null;
             if (team3.Count() > 0)
@@ -49,15 +49,15 @@ namespace MvxCanastaChampions.Core.Services
                 long returnValue = GameDataAccess.GetOrInsertTeamID(competitionID, team3.ElementAt(0).PlayerID, team3.ElementAt(1).PlayerID);
                 if (returnValue != -1)
                 {
-                    team3.ToList().ForEach(u => u.GameTeamID = returnValue);
+                    team3.ToList().ForEach(u => u.TeamID = returnValue);
                     team3IDValue = returnValue;
                 }
             }
 
             // Insert the GameTeam record which describes the Teams on a particular Game.
             GameDataAccess.InsertGameTeam(competitionID, 
-                team1.ElementAt(0).GameTeamID, 
-                team2.ElementAt(0).GameTeamID,
+                team1.ElementAt(0).TeamID, 
+                team2.ElementAt(0).TeamID,
                 team3IDValue);
 
             // --- Insert records in GamePlayerPositions
@@ -72,6 +72,22 @@ namespace MvxCanastaChampions.Core.Services
 
             return rValue;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="player"></param>
+        public static void AddPlayerPenalty(GamePlayerModel player, long roundID)
+        {
+            System.Diagnostics.Debug.WriteLine($"==> Penalty for {player.PlayerName}, Player ID # {player.PlayerID} in game ID {player.GameID}, gameTeamID {player.TeamID}, team # {player.TeamNumber}");
+            GameDataAccess.InsertScorePenalty(player.CompetitionID, player.GameID, roundID, player.TeamID, player.PlayerID);
+        }
+
+        public static int GetTeamPenaltyCount(long competitionID, long gameID, long roundID, long teamID)
+            => GameDataAccess.GetTeamPenaltyCount(competitionID, gameID, roundID, teamID);
+
+        public static int GetRoundNumber(long competitionID, long gameID)
+            => GameDataAccess.GetRoundNumber(competitionID, gameID);
 
         /// <summary>
         /// 
@@ -108,5 +124,31 @@ namespace MvxCanastaChampions.Core.Services
             return round;
         }
 
+        /// <summary>
+        /// Add a Team's Round score.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <param name="gameRoundID"></param>
+        /// <param name="teamID"></param>
+        /// <param name="naturalCanastaCount"></param>
+        /// <param name="unnaturalCanastaCount"></param>
+        /// <param name="redThreeCount"></param>
+        /// <param name="pointsInHand"></param>
+        public static void AddTeamRoundScore(long competitionID, long gameID, long gameRoundID, long teamID,
+            int naturalCanastaCount, int unnaturalCanastaCount, int redThreeCount, int pointsInHand)
+            => GameDataAccess.InsertRoundScoreTally(competitionID, gameID, gameRoundID, teamID,
+                naturalCanastaCount, unnaturalCanastaCount, redThreeCount, pointsInHand);
+
+        /// <summary>
+        /// Add a Round Cutting Bonus to a particular Player.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <param name="gameRoundID"></param>
+        /// <param name="teamID"></param>
+        /// <param name="playerID"></param>
+        public static void AddRoundCuttingBonus(long competitionID, long gameID, long gameRoundID, long teamID, long playerID)
+            => GameDataAccess.InsertRoundCuttingBonus(competitionID, gameID, gameRoundID, teamID, playerID);
     }
 }

@@ -125,5 +125,9 @@ namespace MvxCanastaChampions.Core.Services
 
         public static void RegisterTeam(long competitionID, long player1ID, long player2ID)
             => CompetitionDataAccess.InsertTeam(competitionID, player1ID, player2ID);
+
+
+
+
     }
 }

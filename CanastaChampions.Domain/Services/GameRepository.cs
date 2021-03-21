@@ -77,8 +77,17 @@ namespace CanastaChampions.Domain.Services
                 naturalCanastaCount, unnaturalCanastaCount, redThreeCount, pointsInHand);
         }
 
-        public void InsertPenalty(long competitionID, long gameID, long gameRoundID, long teamID, long playerID,
-            int penaltyCount = 1)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <param name="gameRoundID"></param>
+        /// <param name="teamID"></param>
+        /// <param name="playerID"></param>
+        /// <param name="penaltyCount"></param>
+        public void InsertPenalty(long competitionID, long gameID, long gameRoundID, long teamID, 
+            long playerID, int penaltyCount = 1)
         {
             DBMethods.InsertScorePenalty(competitionID, gameID, gameRoundID, teamID, playerID, penaltyCount);
         }

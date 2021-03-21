@@ -3,6 +3,7 @@
 SELECT
     CompetitionID,
     GameID,
+    COUNT(*) AS ThisRoundNumber,
     COUNT(*)+1 AS NextRoundNumber
 FROM
     GameRound

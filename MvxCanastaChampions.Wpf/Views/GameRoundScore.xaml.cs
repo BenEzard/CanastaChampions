@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MvvmCross.Platforms.Wpf.Views;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -16,7 +17,7 @@ namespace MvxCanastaChampions.Wpf.Views
     /// <summary>
     /// Interaction logic for GameRoundScore.xaml
     /// </summary>
-    public partial class GameRoundScore : UserControl
+    public partial class GameRoundScore : MvxWpfView
     {
         public GameRoundScore()
         {

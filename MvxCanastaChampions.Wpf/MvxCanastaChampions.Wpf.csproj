@@ -9,7 +9,12 @@
   <ItemGroup>
     <None Remove="Images\arrow-left.png" />
     <None Remove="Images\arrow-right.png" />
+    <None Remove="Images\finish_flag.png" />
+    <None Remove="Images\natural_canasta.png" />
+    <None Remove="Images\pack_of_cards.png" />
+    <None Remove="Images\red-three.png" />
     <None Remove="Images\task-attention.png" />
+    <None Remove="Images\unnatural_canasta.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,7 +28,12 @@
   <ItemGroup>
     <Resource Include="Images\arrow-left.png" />
     <Resource Include="Images\arrow-right.png" />
+    <Resource Include="Images\finish_flag.png" />
+    <Resource Include="Images\natural_canasta.png" />
+    <Resource Include="Images\pack_of_cards.png" />
+    <Resource Include="Images\red-three.png" />
     <Resource Include="Images\task-attention.png" />
+    <Resource Include="Images\unnatural_canasta.png" />
   </ItemGroup>
 
 </Project>
