@@ -229,6 +229,7 @@ namespace MvxCanastaChampions.Core.ViewModels
         }
         #endregion
 
+        #region CuttingBonus
         private bool _cuttingBonus;
 
         public bool CuttingBonus
@@ -254,7 +255,7 @@ namespace MvxCanastaChampions.Core.ViewModels
                 
             }
         }
-
+        #endregion
 
         #region TotalScores
         private int _team1TotalScore;
@@ -290,7 +291,7 @@ namespace MvxCanastaChampions.Core.ViewModels
         }
         #endregion
 
-        #region
+        #region PenaltyCount
         private int _team1PenaltyCount = 0;
 
         public int Team1PenaltyCount
@@ -374,12 +375,27 @@ namespace MvxCanastaChampions.Core.ViewModels
 
         public IMvxCommand ScoringCompletedCommand { get; set; }
 
-        public void CompleteScoring()
+        public void ScoringCompleted()
+        {
+            SaveScores();
+            FinaliseRound();
+        }
+
+        public void SaveScores()
         {
             // Insert scores for each team.
             GameServices.AddTeamRoundScore(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team1.TeamID, Team1NaturalCanastaCount, Team1UnnaturalCanastaCount, Team1Red3Count, Team1PointsOnHand);
             GameServices.AddTeamRoundScore(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team2.TeamID, Team2NaturalCanastaCount, Team2UnnaturalCanastaCount, Team2Red3Count, Team2PointsOnHand);
-            GameServices.AddTeamRoundScore(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team3.TeamID, Team3NaturalCanastaCount, Team3UnnaturalCanastaCount, Team3Red3Count, Team3PointsOnHand);
+            if (IsTeam3Playing)
+                GameServices.AddTeamRoundScore(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team3.TeamID, Team3NaturalCanastaCount, Team3UnnaturalCanastaCount, Team3Red3Count, Team3PointsOnHand);
+
+            // Insert Finishing Bonus
+            if (Team1FinishingBonus)
+                GameServices.AddFinishingBonus(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team1.TeamID);
+            else if (Team2FinishingBonus)
+                GameServices.AddFinishingBonus(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team2.TeamID);
+            else if (Team3FinishingBonus)
+                GameServices.AddFinishingBonus(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team3.TeamID);
 
             // Insert Cutting Bonus (if applicable)
             if (CuttingBonus)
@@ -387,9 +403,19 @@ namespace MvxCanastaChampions.Core.ViewModels
                     GameRound.Dealer.TeamID, GameRound.Dealer.PlayerID);
         }
 
+        public void FinaliseRound()
+        {
+            if (Team1FinishingBonus)
+                GameServices.FinaliseRound(GameRound.GameRoundID, GameRound.RoundEndDateTime, Team1.TeamID);
+            else if (Team2FinishingBonus)
+                GameServices.FinaliseRound(GameRound.GameRoundID, GameRound.RoundEndDateTime, Team2.TeamID);
+            else if (Team3FinishingBonus)
+                GameServices.FinaliseRound(GameRound.GameRoundID, GameRound.RoundEndDateTime, Team3.TeamID);
+        }
+
         public GameRoundScoreViewModel()
         {
-            ScoringCompletedCommand =  new MvxCommand(CompleteScoring);
+            ScoringCompletedCommand =  new MvxCommand(ScoringCompleted);
         }
 
         public override void Prepare(RoundModel parameter)
@@ -465,14 +491,17 @@ namespace MvxCanastaChampions.Core.ViewModels
                     totalScore += 800;
                 else
                     totalScore += red3Count * 100;
+
+            totalScore += pointsOnHand;
             }
             else {  // hasCanasta == false
                 if (red3Count == 4)
                     totalScore -= 800;
                 else
                     totalScore -= red3Count * 100;
+
+                totalScore -= pointsOnHand;
             }
-            totalScore += pointsOnHand;
 
             if (finishingBonus)
                 totalScore += 100;

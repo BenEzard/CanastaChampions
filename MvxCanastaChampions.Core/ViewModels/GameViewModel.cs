@@ -245,6 +245,9 @@ namespace MvxCanastaChampions.Core.ViewModels
         public bool IsStartRoundButtonAvailable
             => GameRound.GameRoundID == -1 ? true : false;
 
+        public bool IsStartRoundButtonAndTeam3Available
+            => GameRound.GameRoundID == -1  && IsTeam3Utilised ? true : false;
+
         public GameViewModel(IMvxNavigationService navigationService)
         {
             _navigationService = navigationService;

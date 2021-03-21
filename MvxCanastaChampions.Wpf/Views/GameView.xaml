@@ -27,50 +27,36 @@
             <TextBlock Text="Team" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
-                <TextBlock Text="{Binding Team1Player1.PlayerName}" VerticalAlignment="Center" />
-                <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team1Player1PenaltyCommand"
-                    VerticalAlignment="Center" Margin="5" Background="Transparent" BorderThickness="0">
-                    <Image Source="/Images/task-attention.png" Width="22"></Image>
-                </Button>
+                <TextBlock Text="{Binding Team1Player1.PlayerName}" VerticalAlignment="Center" Width="100"/>
+                <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team1Player1PenaltyCommand" IsEnabled="{Binding IsEndRoundButtonAvailable}"
+                    Content="Penalty" VerticalAlignment="Center" Margin="5" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
-                <TextBlock Text="{Binding Team1Player2.PlayerName}" VerticalAlignment="Center" />
-                <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team1Player2PenaltyCommand"
-                    VerticalAlignment="Center" Margin="5" Background="Transparent" BorderThickness="0">
-                    <Image Source="/Images/task-attention.png" Width="22"></Image>
-                </Button>
+                <TextBlock Text="{Binding Team1Player2.PlayerName}" VerticalAlignment="Center" Width="100"/>
+                <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team1Player2PenaltyCommand" IsEnabled="{Binding IsEndRoundButtonAvailable}"
+                    VerticalAlignment="Center" Margin="5" Content="Penalty" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2">
-                <TextBlock Text="{Binding Team2Player1.PlayerName}" VerticalAlignment="Center" />
-                <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team2Player1PenaltyCommand"
-                    VerticalAlignment="Center" Margin="5" Background="Transparent" BorderThickness="0">
-                    <Image Source="/Images/task-attention.png" Width="22"></Image>
-                </Button>
+                <TextBlock Text="{Binding Team2Player1.PlayerName}" VerticalAlignment="Center"  Width="100" />
+                <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team2Player1PenaltyCommand" IsEnabled="{Binding IsEndRoundButtonAvailable}"
+                    VerticalAlignment="Center" Margin="5" Content="Penalty" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2">
-                <TextBlock Text="{Binding Team2Player2.PlayerName}" VerticalAlignment="Center" />
-                <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team2Player2PenaltyCommand"
-                    VerticalAlignment="Center" Margin="5" Background="Transparent" BorderThickness="0">
-                    <Image Source="/Images/task-attention.png" Width="22"></Image>
-                </Button>
+                <TextBlock Text="{Binding Team2Player2.PlayerName}" VerticalAlignment="Center" Width="100" />
+                <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team2Player2PenaltyCommand" IsEnabled="{Binding IsEndRoundButtonAvailable}"
+                    VerticalAlignment="Center" Margin="5" Content="Penalty" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="3">
-                <TextBlock Text="{Binding Team3Player1.PlayerName}" VerticalAlignment="Center" />
-                <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team3Player2PenaltyCommand"
-                        IsEnabled="{Binding IsTeam3Utilised}"
-                    VerticalAlignment="Center" Margin="5" Background="Transparent" BorderThickness="0">
-                    <Image Source="/Images/task-attention.png" Width="22"></Image>
-                </Button>
+                <TextBlock Text="{Binding Team3Player1.PlayerName}" VerticalAlignment="Center" Width="100" />
+                <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team3Player2PenaltyCommand" IsEnabled="{Binding IsStartRoundButtonAndTeam3Available}"
+                    VerticalAlignment="Center" Margin="5" Content="Penalty" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="3">
-                <TextBlock Text="{Binding Team3Player2.PlayerName}" VerticalAlignment="Center" />
-                <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team3Player2PenaltyCommand"
-                        IsEnabled="{Binding IsTeam3Utilised}"
-                    VerticalAlignment="Center" Margin="5" Background="Transparent" BorderThickness="0">
-                    <Image Source="/Images/task-attention.png" Width="22"></Image>
-                </Button>
+                <TextBlock Text="{Binding Team3Player2.PlayerName}" VerticalAlignment="Center" Width="100" />
+                <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team3Player2PenaltyCommand" IsEnabled="{Binding IsStartRoundButtonAndTeam3Available}"
+                    VerticalAlignment="Center" Margin="5" Content="Penalty" />
             </StackPanel>
 
             <TextBlock Text="Score" Grid.Row="2" Grid.Column="0" 
@@ -86,14 +72,14 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
-                <TextBlock FontSize="20">Dealer:</TextBlock>
-                <TextBlock FontSize="20" Text="{Binding GameRound.Dealer.PlayerName}" Width="200" Margin="10,0,0,0"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Margin="10">
+                <TextBlock FontSize="20" VerticalAlignment="Center">Dealer:</TextBlock>
+                <TextBlock FontSize="20" VerticalAlignment="Center" Text="{Binding GameRound.Dealer.PlayerName}" Width="200" Margin="10,0,0,0"/>
                 <Button mvx:Bi.nd="Command StartRoundCommand" IsEnabled="{Binding IsStartRoundButtonAvailable}"
-                        FontSize="20" Margin="10 0" >Start Round</Button>
+                        FontSize="20" Margin="10 0" Padding="10 5" >Start Round</Button>
                 <Button mvx:Bi.nd="Command EndRoundCommand" IsEnabled="{Binding IsEndRoundButtonAvailable}"
-                        FontSize="20" >End Round</Button>
-                <Button FontSize="20" Margin="60 0 0 0" mvx:Bi.nd="">End Game</Button>
+                        FontSize="20" Padding="10 5">End Round</Button>
+                <Button FontSize="20" Margin="60 0 0 0" mvx:Bi.nd="" Padding="10 5">End Game</Button>
             </StackPanel>
         </Grid>
         <Grid>

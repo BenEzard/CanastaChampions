@@ -151,7 +151,26 @@ namespace MvxCanastaChampions.Core.Services
         public static void AddRoundCuttingBonus(long competitionID, long gameID, long gameRoundID, long teamID, long playerID)
             => GameDataAccess.InsertRoundCuttingBonus(competitionID, gameID, gameRoundID, teamID, playerID);
 
+        /// <summary>
+        /// Add a Finishing Bonus for a particular Team.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <param name="gameRoundID"></param>
+        /// <param name="teamID"></param>
+        public static void AddFinishingBonus(long competitionID, long gameID, long gameRoundID, long teamID)
+            => GameDataAccess.InsertFinishingBonus(competitionID, gameID, gameRoundID, teamID);
+
+        /// <summary>
+        /// Get a list of the Teams playing a Game.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <returns></returns>
         public static List<TeamModel> GetTeams(long competitionID, long gameID)
             => GameDataAccess.GetTeams(competitionID, gameID);
+
+        public static void FinaliseRound(long gameRoundID, DateTime endOfRoundDateTime, long winningTeamID)
+            => GameDataAccess.UpdateRoundInformation(gameRoundID, endOfRoundDateTime, winningTeamID);
     }
 }

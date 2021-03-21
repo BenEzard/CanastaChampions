@@ -422,6 +422,32 @@ namespace CanastaChampions.DataAccess.Services
             return (currentDealer, nextDealer);
         }
 
+                /// <summary>
+        /// Record the End of the Round.
+        /// </summary>
+        /// <param name="gameRoundID"></param>
+        public static void UpdateRoundInformation(long gameRoundID, DateTime endOfRoundDateTime, long winningTeamID)
+        {
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            string sql = "UPDATE GameRound" +
+                " SET EndOfRoundDateTime = @endOfRound," +
+                " WinningTeamID = @winner" + 
+                " WHERE GameRoundID = @gameRoundID";
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@endOfRound", endOfRoundDateTime);
+                command.Parameters.AddWithValue("@gameRoundID", gameRoundID);
+                command.Parameters.AddWithValue("@winner", winningTeamID);
+                command.ExecuteNonQuery();
+            }
+
+            _conn.Dispose();
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -547,6 +573,33 @@ namespace CanastaChampions.DataAccess.Services
                 command.Parameters.AddWithValue("@gameRoundID", gameRoundID);
                 command.Parameters.AddWithValue("@teamID", teamID);
                 command.Parameters.AddWithValue("@playerID", playerID);
+                command.ExecuteNonQuery();
+            }
+
+            _conn.Dispose();
+        }
+
+        /// <summary>
+        /// Insert a Finishing Bonus.
+        /// Applies to a Team, not to a Player.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <param name="gameRoundID"></param>
+        /// <param name="teamID"></param>
+        public static void InsertFinishingBonus(long competitionID, long gameID, long gameRoundID, long teamID)
+        {
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "INSERT INTO GameRoundScoreDetails (CompetitionID, GameID, GameRoundID, TeamID, FinishingBonus)" +
+                        " VALUES (@competitionID, @gameID, @gameRoundID, @teamID, 1)";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.Parameters.AddWithValue("@gameRoundID", gameRoundID);
+                command.Parameters.AddWithValue("@teamID", teamID);
                 command.ExecuteNonQuery();
             }
 

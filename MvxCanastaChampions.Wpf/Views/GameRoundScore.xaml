@@ -37,95 +37,103 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
-        <!-- Row 1: Headers -->
-        <TextBlock FontSize="20" Grid.Column="0" Grid.Row="0" Width="100" VerticalAlignment="Center">Teams</TextBlock>
 
-        <TextBlock Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">Penalty Count</TextBlock>
-        <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center" >
+        <!-- Row 0: Headers -->
+        <TextBlock FontSize="20" Grid.Column="0" Grid.Row="0" Width="100" VerticalAlignment="Center">Round:</TextBlock>
+        <TextBlock FontSize="20" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Text="{Binding GameRound.RoundNumber}"/>
+
+        <!-- Row 1: Headers -->
+        <TextBlock FontSize="20" Grid.Column="0" Grid.Row="1" Width="100" VerticalAlignment="Center">Teams</TextBlock>
+
+        <TextBlock Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">Penalty Count</TextBlock>
+        
+        <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" >
             <Image Source="/Images/natural_canasta.png" Width="100" />
             <TextBlock TextWrapping="Wrap">Natural Canasta Count</TextBlock>
         </StackPanel>
-        <StackPanel Orientation="Vertical" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Center" >
+        <StackPanel Orientation="Vertical" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Center" >
             <Image Source="/Images/unnatural_canasta.png" Width="100" />
             <TextBlock TextWrapping="Wrap">Unnatural Canasta Count</TextBlock>
         </StackPanel>
-        <StackPanel Orientation="Vertical" Grid.Column="4" Grid.Row="0" HorizontalAlignment="Center" >
+        <StackPanel Orientation="Vertical" Grid.Column="4" Grid.Row="1" HorizontalAlignment="Center" >
             <Image Source="/Images/red-three.png" Width="80" />
             <TextBlock TextWrapping="Wrap">Red 3 Count</TextBlock>
         </StackPanel>
-        <TextBlock Grid.Column="5" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">Points On Hand</TextBlock>
-        <StackPanel Orientation="Vertical" Grid.Column="6" Grid.Row="0" HorizontalAlignment="Center" >
+        <TextBlock Grid.Column="5" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">Points On Hand</TextBlock>
+        
+        <StackPanel Orientation="Vertical" Grid.Column="6" Grid.Row="1" HorizontalAlignment="Center" >
             <Image Source="/Images/finish_flag.png" Width="30" />
             <TextBlock TextWrapping="Wrap">Finishing Bonus</TextBlock>
         </StackPanel>
 
-        <StackPanel Orientation="Vertical" Grid.Column="7" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" >
+        <StackPanel Orientation="Vertical" Grid.Column="7" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" >
             <TextBlock TextWrapping="Wrap">Total Score</TextBlock>
         </StackPanel>
 
         <!-- Team Names -->
         <TextBlock Text="{Binding Team1.TeamName}"
-            Grid.Column="0" Grid.Row="1" FontSize="20" VerticalAlignment="Center" TextWrapping="Wrap" />
-        <TextBlock Text="{Binding Team2.TeamName}"
             Grid.Column="0" Grid.Row="2" FontSize="20" VerticalAlignment="Center" TextWrapping="Wrap" />
-        <TextBlock Text="{Binding Team3.TeamName}"
+        <TextBlock Text="{Binding Team2.TeamName}"
             Grid.Column="0" Grid.Row="3" FontSize="20" VerticalAlignment="Center" TextWrapping="Wrap" />
+        <TextBlock Text="{Binding Team3.TeamName}"
+            Grid.Column="0" Grid.Row="4" FontSize="20" VerticalAlignment="Center" TextWrapping="Wrap" />
 
         <!-- Penalty Count -->
-        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Team1PenaltyCount}"
+        <TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding Team1PenaltyCount}"
                    FontSize="20" Width="50" Height="30" VerticalAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center" />
-        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Team2PenaltyCount}"
+        <TextBlock Grid.Column="3" Grid.Row="2" Text="{Binding Team2PenaltyCount}"
                    FontSize="20" Width="50" Height="30" VerticalAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center" />
-        <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Team3PenaltyCount}" IsEnabled="{Binding IsTeam3Playing}"
+        <TextBlock Grid.Column="4" Grid.Row="3" Text="{Binding Team3PenaltyCount}" IsEnabled="{Binding IsTeam3Playing}"
                    FontSize="20" Width="50" Height="30" VerticalAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center" />
+        
         <!-- Natural Canastas -->
-        <TextBox Grid.Column="2" Grid.Row="1" Width="50" Height="30" FontSize="18" Text="{Binding Team1NaturalCanastaCount}" HorizontalAlignment="Center" />
-        <TextBox Grid.Column="2" Grid.Row="2" Width="50" Height="30" FontSize="18" Text="{Binding Team2NaturalCanastaCount}" HorizontalAlignment="Center" />
-        <TextBox Grid.Column="2" Grid.Row="3" Text="{Binding Team3NaturalCanastaCount}" IsEnabled="{Binding IsTeam3Playing}"
+        <TextBox Grid.Column="2" Grid.Row="2" Width="50" Height="30" FontSize="18" Text="{Binding Team1NaturalCanastaCount}" HorizontalAlignment="Center" />
+        <TextBox Grid.Column="2" Grid.Row="3" Width="50" Height="30" FontSize="18" Text="{Binding Team2NaturalCanastaCount}" HorizontalAlignment="Center" />
+        <TextBox Grid.Column="2" Grid.Row="4" Text="{Binding Team3NaturalCanastaCount}" IsEnabled="{Binding IsTeam3Playing}"
                  Width="50" Height="30" FontSize="18" HorizontalAlignment="Center" />
 
         <!-- Unnatural Canastas -->
-        <TextBox Grid.Column="3" Grid.Row="1" Width="50" Height="30" FontSize="18" Text="{Binding Team1UnnaturalCanastaCount}" HorizontalAlignment="Center" />
-        <TextBox Grid.Column="3" Grid.Row="2" Width="50" Height="30" FontSize="18" Text="{Binding Team2UnnaturalCanastaCount}" HorizontalAlignment="Center" />
-        <TextBox Grid.Column="3" Grid.Row="3" Text="{Binding Team3UnnaturalCanastaCount}" IsEnabled="{Binding IsTeam3Playing}"
+        <TextBox Grid.Column="3" Grid.Row="2" Width="50" Height="30" FontSize="18" Text="{Binding Team1UnnaturalCanastaCount}" HorizontalAlignment="Center" />
+        <TextBox Grid.Column="3" Grid.Row="3" Width="50" Height="30" FontSize="18" Text="{Binding Team2UnnaturalCanastaCount}" HorizontalAlignment="Center" />
+        <TextBox Grid.Column="3" Grid.Row="4" Text="{Binding Team3UnnaturalCanastaCount}" IsEnabled="{Binding IsTeam3Playing}"
                  Width="50" Height="30" FontSize="18" HorizontalAlignment="Center" />
 
         <!-- Red 3 Count -->
-        <TextBox Grid.Column="4" Grid.Row="1" Width="50" Height="30" FontSize="18" Text="{Binding Team1Red3Count}" HorizontalAlignment="Center" />
-        <TextBox Grid.Column="4" Grid.Row="2" Width="50" Height="30" FontSize="18" Text="{Binding Team2Red3Count}" HorizontalAlignment="Center" />
-        <TextBox Grid.Column="4" Grid.Row="3" Text="{Binding Team3Red3Count}"  IsEnabled="{Binding IsTeam3Playing}"
+        <TextBox Grid.Column="4" Grid.Row="2" Width="50" Height="30" FontSize="18" Text="{Binding Team1Red3Count}" HorizontalAlignment="Center" />
+        <TextBox Grid.Column="4" Grid.Row="3" Width="50" Height="30" FontSize="18" Text="{Binding Team2Red3Count}" HorizontalAlignment="Center" />
+        <TextBox Grid.Column="4" Grid.Row="4" Text="{Binding Team3Red3Count}"  IsEnabled="{Binding IsTeam3Playing}"
                  Width="50" Height="30" FontSize="18" HorizontalAlignment="Center" />
 
         <!-- Points on Hand -->
-        <TextBox Grid.Column="5" Grid.Row="1" Width="70" Height="30" FontSize="18" Text="{Binding Team1PointsOnHand}" HorizontalAlignment="Center" />
-        <TextBox Grid.Column="5" Grid.Row="2" Width="70" Height="30" FontSize="18" Text="{Binding Team2PointsOnHand}" HorizontalAlignment="Center" />
-        <TextBox Grid.Column="5" Grid.Row="3" Text="{Binding Team3PointsOnHand}" IsEnabled="{Binding IsTeam3Playing}"
+        <TextBox Grid.Column="5" Grid.Row="2" Width="70" Height="30" FontSize="18" Text="{Binding Team1PointsOnHand}" HorizontalAlignment="Center" />
+        <TextBox Grid.Column="5" Grid.Row="3" Width="70" Height="30" FontSize="18" Text="{Binding Team2PointsOnHand}" HorizontalAlignment="Center" />
+        <TextBox Grid.Column="5" Grid.Row="4" Text="{Binding Team3PointsOnHand}" IsEnabled="{Binding IsTeam3Playing}"
                  Width="70" Height="30" FontSize="18" HorizontalAlignment="Center" />
         
         <!-- Finishing Bonus -->
         <RadioButton GroupName="FinishingBonus" Content="1" IsChecked="{Binding Team1FinishingBonus}"
-                     Grid.Column="6" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <RadioButton GroupName="FinishingBonus"  Content="2" IsChecked="{Binding Team2FinishingBonus}"
                      Grid.Column="6" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <RadioButton GroupName="FinishingBonus"  Content="3"  IsChecked="{Binding Team3FinishingBonus}" IsEnabled="{Binding IsTeam3Playing}"
+        <RadioButton GroupName="FinishingBonus"  Content="2" IsChecked="{Binding Team2FinishingBonus}"
                      Grid.Column="6" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <RadioButton GroupName="FinishingBonus"  Content="3"  IsChecked="{Binding Team3FinishingBonus}" IsEnabled="{Binding IsTeam3Playing}"
+                     Grid.Column="6" Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
         <!-- Total -->
-        <TextBlock Grid.Column="8" Grid.Row="1" Text="{Binding Team1Score}"
+        <TextBlock Grid.Column="8" Grid.Row="2" Text="{Binding Team1Score}"
                    FontSize="20" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <TextBlock Grid.Column="8" Grid.Row="2" Text="{Binding Team2Score}"
+        <TextBlock Grid.Column="8" Grid.Row="3" Text="{Binding Team2Score}"
                    FontSize="20" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <TextBlock Grid.Column="8" Grid.Row="3" Text="{Binding Team3Score}"
+        <TextBlock Grid.Column="8" Grid.Row="4" Text="{Binding Team3Score}"
                    FontSize="20" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
         <!-- Button -->
-        <StackPanel Grid.Column="0" Grid.ColumnSpan="8" Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center">
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="8" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
             <CheckBox Content="Cutting Bonus" IsChecked="{Binding CuttingBonus}"
                       VerticalAlignment="Center"/>
             <Button Padding="5" Margin="50 0 0 0" mvx:Bi.nd="Command ScoringCompletedCommand">Scoring Completed</Button>
