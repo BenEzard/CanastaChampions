@@ -72,6 +72,137 @@ namespace CanastaChampions.DataAccess.Services
             }
         }
 
+        /// <summary>
+        /// Get the RoundModel.
+        /// The Dealer will only be populated by the PlayerID
+        /// </summary>
+        /// <param name="gameRoundID"></param>
+        /// <returns></returns>
+        public static RoundModel GetRound(long gameRoundID)
+        {
+            RoundModel round = new RoundModel();
+
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "SELECT GameRoundID, CompetitionID, GameID, GameRoundNumber, StartOfRoundDateTime," +
+                    " EndOfRoundDateTime, DealerID, WinningTeamID" +
+                    " FROM GameRound" +
+                    " WHERE GameRoundID = @gameRoundID";
+                command.Parameters.AddWithValue("@gameRoundID", gameRoundID);
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        round.GameRoundID = reader.GetInt64(0);
+                        round.CompetitionID = reader.GetInt64(1);
+                        round.GameID = reader.GetInt64(2);
+                        round.RoundNumber = reader.GetInt32(3);
+                        round.RoundStartDateTime = reader.GetDateTime(4);
+
+                        if (reader.IsDBNull(5) == false)
+                            round.RoundEndDateTime = reader.GetDateTime(5);
+
+                        round.Dealer = new GamePlayerModel(reader.GetInt64(6));
+
+                        if (reader.IsDBNull(7) == false)
+                            round.WinningTeamID = reader.GetInt64(7);
+                    }
+                }
+                _conn.Dispose();
+
+                return round;
+            }
+        }
+
+        [Obsolete("Not sure if this is needed? Maybe for stats...")]
+        public static List<RoundResultModel> GetResultsByTeam(long competitionID, long gameID)
+        {
+            List<RoundResultModel> results = new List<RoundResultModel>();
+
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "SELECT GameRoundID, GameRoundNumber, TeamID, TeamName, TotalPoints, WinningTeam, DealerName" +
+                    " FROM vwPointsPerRound" +
+                    " WHERE CompetitionID = @competitionID" +
+                    " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        RoundResultModel roundResult = new RoundResultModel();
+                        roundResult.GameRoundID = reader.GetInt64(0);
+                        roundResult.RoundNumber = reader.GetInt32(1);
+                        roundResult.Team1Score = reader.GetInt32(2);
+                        roundResult.Team2Score = reader.GetInt32(3);
+                        roundResult.Team3Score = reader.GetInt32(4);
+                        roundResult.WinningTeamName = reader.GetString(5);
+                        roundResult.DealerName = reader.GetString(6);
+                        results.Add(roundResult);
+                    }
+                }
+            }
+            _conn.Dispose();
+
+            return results;
+        }
+
+        public static List<RoundResultModel> GetResults(long competitionID, long gameID)
+        {
+            List<RoundResultModel> results = new List<RoundResultModel>();
+
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "SELECT GameRoundID, GameRoundNumber, Team1Score, Team2Score, Team3Score, WinningTeam, DealerName" +
+                    " FROM vwRoundScoreSummary" +
+                    " WHERE CompetitionID = @competitionID" +
+                    " AND GameID = @gameID" +
+                    " ORDER BY GameRoundNumber";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        RoundResultModel roundResult = new RoundResultModel();
+                        roundResult.GameRoundID = reader.GetInt64(0);
+                        roundResult.RoundNumber = reader.GetInt32(1);
+                        roundResult.Team1Score = reader.GetInt32(2);
+                        roundResult.Team2Score = reader.GetInt32(3);
+                        if (reader.IsDBNull(4) == false)
+                            roundResult.Team3Score = reader.GetInt32(4);
+                        if (reader.IsDBNull(5) == false)
+                            roundResult.WinningTeamName = reader.GetString(5);
+                        if (reader.IsDBNull(6) == false)
+                            roundResult.DealerName = reader.GetString(6);
+                        results.Add(roundResult);
+                    }
+                }
+            }
+            _conn.Dispose();
+
+            return results;
+        }
+
+        /// <summary>
+        /// A team number that is consecutive per game. i.e. Team 1, 2, 3.
+        /// </summary>
+        public int TeamNumber { get; set; }
+        
+
         public static int GetRoundNumber(long competitionID, long gameID)
         {
             int thisRoundNumber = 1;
@@ -130,6 +261,89 @@ namespace CanastaChampions.DataAccess.Services
             }
             _conn.Dispose();
             return rValue;
+        }
+
+        /// <summary>
+        /// Get incomplete Game and Round details from a specified Competition.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <returns>Returns -1 for both Game and Round if they don't exist.</returns>
+        public static (long gameID, long gameRoundID) GetIncompleteGameAndRoundDetails(long competitionID)
+        {
+            long gameID = -1;
+            long gameRoundID = -1;
+
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "SELECT MostRecent_GameID, MostRecent_GameRoundID" +
+                    " FROM vwIncompleteGameInfo" +
+                    " WHERE CompetitionID = @competitionID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        gameID = reader.GetInt64(0);
+                        gameRoundID = reader.GetInt64(1);
+                    }
+                }
+                _conn.Dispose();
+
+                return (gameID, gameRoundID);
+            }
+        }
+
+        /// <summary>
+        /// Get the GameModel information for a specified Game.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <returns></returns>
+        public static GameModel GetGame(long competitionID, long gameID)
+        {
+            GameModel gameModel = null;
+
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "SELECT GameID, CompetitionID, CompetitionGameNumber," +
+                    " Location, GameStartDateTime, GameEndDateTime, LogicallyDeleted" +
+                    " FROM Game" +
+                    " WHERE CompetitionID = @competitionID" +
+                    " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        gameModel = new GameModel();
+                        gameModel.GameID = gameID;
+                        gameModel.CompetitionID = competitionID;
+                        gameModel.CompetitionGameNumber = reader.GetInt32(2);
+
+                        if (reader.IsDBNull(3) == false)
+                            gameModel.Location = reader.GetString(3);
+
+                        gameModel.GameStartDateTime = reader.GetDateTime(4);
+
+                        if (reader.IsDBNull(5) == false)
+                            gameModel.GameEndDateTime = reader.GetDateTime(5);
+
+                        gameModel.LogicallyDeleted = reader.GetBoolean(6);
+                    }
+                }
+                _conn.Dispose();
+
+                return gameModel;
+            }
         }
 
         /// <summary>
@@ -261,6 +475,120 @@ namespace CanastaChampions.DataAccess.Services
 
                 return teams;
             }
+        }
+
+        /// <summary>
+        /// Get Players for a specific Game.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <returns></returns>
+        public static List<GamePlayerModel> GetPlayers(long competitionID, long gameID)
+        {
+            List<GamePlayerModel> rValue = new List<GamePlayerModel>();
+
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "SELECT GameTeamID," +
+                    " Team1ID, Team1Player1ID, Team1Player1Name, Team1Player2ID, Team1Player2Name, " +
+                    " Team2ID, Team2Player1ID, Team2Player1Name, Team2Player2ID, Team2Player2Name, " +
+                    " Team3ID, Team3Player1ID, Team3Player1Name, Team3Player2ID, Team3Player2Name " +
+                    " FROM vwGameTeam" +
+                    " WHERE CompetitionID = @competitionID" +
+                    " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        // Team 1
+                        long teamID = reader.GetInt64(1);
+                        // Player 1
+                        GamePlayerModel gpm = new GamePlayerModel
+                        {
+                            CompetitionID = competitionID,
+                            GameID = gameID,
+                            TeamID = teamID,
+                            PlayerID = reader.GetInt64(2),
+                            PlayerName = reader.GetString(3),
+                            TeamNumber = 1
+                        };
+                        rValue.Add(gpm);
+                        // Player 2
+                        gpm = new GamePlayerModel
+                        {
+                            CompetitionID = competitionID,
+                            GameID = gameID,
+                            TeamID = teamID,
+                            PlayerID = reader.GetInt64(4),
+                            PlayerName = reader.GetString(5),
+                            TeamNumber = 1
+                        };
+                        rValue.Add(gpm);
+
+                        // Team 2
+                        teamID = reader.GetInt64(6);
+                        // Player 1
+                        gpm = new GamePlayerModel
+                        {
+                            CompetitionID = competitionID,
+                            GameID = gameID,
+                            TeamID = teamID,
+                            PlayerID = reader.GetInt64(7),
+                            PlayerName = reader.GetString(8),
+                            TeamNumber = 2
+                        };
+                        rValue.Add(gpm);
+                        // Player 2
+                        gpm = new GamePlayerModel
+                        {
+                            CompetitionID = competitionID,
+                            GameID = gameID,
+                            TeamID = teamID,
+                            PlayerID = reader.GetInt64(9),
+                            PlayerName = reader.GetString(10),
+                            TeamNumber = 2
+                        };
+                        rValue.Add(gpm);
+
+                        if (reader.IsDBNull(11) == false)
+                        {
+                            // Team 3
+                            teamID = reader.GetInt64(11);
+                            // Player 1
+                            gpm = new GamePlayerModel
+                            {
+                                CompetitionID = competitionID,
+                                GameID = gameID,
+                                TeamID = teamID,
+                                PlayerID = reader.GetInt64(12),
+                                PlayerName = reader.GetString(13),
+                                TeamNumber = 3
+                            };
+                            rValue.Add(gpm);
+                            // Player 2
+                            gpm = new GamePlayerModel
+                            {
+                                CompetitionID = competitionID,
+                                GameID = gameID,
+                                TeamID = teamID,
+                                PlayerID = reader.GetInt64(16),
+                                PlayerName = reader.GetString(17),
+                                TeamNumber = 3
+                            };
+                            rValue.Add(gpm);
+                        }
+                    }
+                }
+            }
+            _conn.Dispose();
+
+            return rValue;
         }
 
         /// <summary>

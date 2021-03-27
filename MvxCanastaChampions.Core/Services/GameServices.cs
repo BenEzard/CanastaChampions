@@ -76,6 +76,21 @@ namespace MvxCanastaChampions.Core.Services
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <returns></returns>
+        public static List<GamePlayerModel> GetPlayers(long competitionID, long gameID)
+        {
+            List<GamePlayerModel> players = new List<GamePlayerModel>();
+
+
+
+            return players;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="player"></param>
         public static void AddPlayerPenalty(GamePlayerModel player, long roundID)
         {
@@ -85,6 +100,26 @@ namespace MvxCanastaChampions.Core.Services
 
         public static int GetTeamPenaltyCount(long competitionID, long gameID, long roundID, long teamID)
             => GameDataAccess.GetTeamPenaltyCount(competitionID, gameID, roundID, teamID);
+
+        /// <summary>
+        /// Check for an unfinished Game in the specified Competition.
+        /// If there is one, it will return a gameID, and either a RoundID (specifying a Round was underway) or 0, 
+        /// if no Round was underway.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <param name="gameRoundID"></param>
+        /// <returns></returns>
+        public static bool CheckForUnfinishedGame(long competitionID, out long gameID, out long gameRoundID)
+        {
+            bool unfinishedGame = false;
+                
+            (gameID, gameRoundID) = GameDataAccess.GetIncompleteGameAndRoundDetails(competitionID);
+            if (gameID > -1)
+                unfinishedGame = true;
+
+            return unfinishedGame;
+        }
 
         public static int GetRoundNumber(long competitionID, long gameID)
             => GameDataAccess.GetRoundNumber(competitionID, gameID);
@@ -123,6 +158,42 @@ namespace MvxCanastaChampions.Core.Services
 
             return round;
         }
+
+        /// <summary>
+        /// Load a specified RoundModel.
+        /// </summary>
+        /// <param name="gameRoundID"></param>
+        /// <returns></returns>
+        public static RoundModel LoadRound(long gameRoundID)
+            => GameDataAccess.GetRound(gameRoundID);
+
+        /// <summary>
+        /// Get the results of the game by Team.
+        /// NOTE: Not sure if this is useful as-is???
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <returns></returns>
+        public static List<RoundResultModel> GetResultsByTeam(long competitionID, long gameID)
+            => GameDataAccess.GetResultsByTeam(competitionID, gameID);
+
+        /// <summary>
+        /// Get the results of the game.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <returns></returns>
+        public static List<RoundResultModel> GetResults(long competitionID, long gameID)
+            => GameDataAccess.GetResults(competitionID, gameID);
+
+        /// <summary>
+        /// Load a Game.
+        /// </summary>
+        /// <param name="gameID"></param>
+        /// <param name="competitionID"></param>
+        /// <returns></returns>
+        public static GameModel LoadGame(long competitionID, long gameID)
+            => GameDataAccess.GetGame(competitionID, gameID);
 
         /// <summary>
         /// Add a Team's Round score.
@@ -172,5 +243,8 @@ namespace MvxCanastaChampions.Core.Services
 
         public static void FinaliseRound(long gameRoundID, DateTime endOfRoundDateTime, long winningTeamID)
             => GameDataAccess.UpdateRoundInformation(gameRoundID, endOfRoundDateTime, winningTeamID);
+
+        public static List<GamePlayerModel> GetCurrentPlayers(long competitionID, long gameID)
+            => GameDataAccess.GetPlayers(competitionID, gameID);
     }
 }

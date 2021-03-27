@@ -26,6 +26,11 @@ namespace CanastaChampions.DataAccess.Models
 
         }
 
+        public GamePlayerModel(long playerID)
+        {
+            PlayerID = playerID;
+        }
+        
         public GamePlayerModel(long playerID, string playerName)
         {
             PlayerID = playerID;

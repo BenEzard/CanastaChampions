@@ -55,6 +55,9 @@ namespace MvxCanastaChampions.Core.ViewModels
             }
         }
 
+        public bool UnfinishedGameExists
+            => GameServices.CheckForUnfinishedGame(SelectedCompetition.CompetitionID, out _, out _);            
+
         #region FormTeamCommand
         public IMvxCommand FormTeamCommand { get; set; }
 
@@ -181,6 +184,22 @@ namespace MvxCanastaChampions.Core.ViewModels
         }
         #endregion
 
+        #region LoadGameCommand
+        public IMvxCommand LoadGameCommand { get; set; }
+
+        public void LoadGame()
+        {
+            System.Diagnostics.Debug.WriteLine($"Load Game");
+            List<GamePlayerModel> players = new List<GamePlayerModel>();
+            players.Add(new GamePlayerModel
+            {
+                CompetitionID = SelectedCompetition.CompetitionID,
+                PlayerName = "LOAD"
+            });
+            _navigationService.Navigate<GameViewModel, List<GamePlayerModel>>(players);
+        }
+        #endregion
+
         public bool CanStartGame
             => (TeamFormationList.Where(x => x.TeamNumber == 0).Count() == 0) ? true : false;
 
@@ -195,6 +214,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             AddPlayerCommand = new MvxCommand(AddPlayer);
             EditPlayerCommand = new MvxCommand(EditPlayer);
             StartGameCommand = new MvxCommand(StartGame);
+            LoadGameCommand = new MvxCommand(LoadGame);
         }
 
 

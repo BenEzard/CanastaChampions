@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
 namespace MvxCanastaChampions.Core.ViewModels
 {
     public class GameViewModel : MvxViewModel<List<GamePlayerModel>>
@@ -110,19 +111,68 @@ namespace MvxCanastaChampions.Core.ViewModels
 
         private List<GamePlayerModel> _gamePlayers = null;
 
+        private GameModel _game = new GameModel();
+
+        public GameModel Game
+        {
+            get { return _game; }
+            set
+            {
+                _game = value;
+                SetProperty(ref _game, value);
+            }
+        }
+
+
+        private RoundModel _round = new RoundModel();
+
+        public RoundModel GameRound
+        {
+            get { return _round; }
+            set
+            {
+                _round = value;
+                SetProperty(ref _round, value);
+            }
+        }
+
+        private MvxObservableCollection<RoundResultModel> _results = new MvxObservableCollection<RoundResultModel>();
+
+        public MvxObservableCollection<RoundResultModel> Results
+        {
+            get => _results;
+            set
+            {
+                _results = value;
+                //System.Diagnostics.Debug.WriteLine($"updating the list");
+                SetProperty(ref _results, value);
+            }
+        }
+
+        /// <summary>
+        /// Handle the pass-through variable.
+        /// It expects either:
+        ///     (a) 1 element in the list with the competitionID filled out
+        ///     (b) all of the players in the list
+        /// </summary>
+        /// <param name="parameter"></param>
         public override void Prepare(List<GamePlayerModel> parameter)
         {
-            //foreach (GamePlayerModel m in parameter)
-            //{
-            //    System.Diagnostics.Debug.WriteLine($"==> Team Member is {m.PlayerName}, team # {m.TeamNumber}");
-            //}
-
             _gamePlayers = parameter;
-
+            
             // Unpack the pass-through variable into teams
-            UnPackParameterVariable(parameter);
+            UnpackPlayerVariable(parameter);
 
-            StartGame();
+            // Check to see if there is an ongoing game.
+            if (GameServices.CheckForUnfinishedGame(_competitionID, out long gameID, out long gameRoundID))
+            {
+                System.Diagnostics.Debug.WriteLine($"==> Unfinished gameID found {gameID} (roundID = {gameRoundID})");
+                LoadGame(_competitionID, gameID, gameRoundID);
+
+                Results = new MvxObservableCollection<RoundResultModel>(GameServices.GetResults(_competitionID, _gameID));
+            }
+            else 
+                StartGame();
         }
 
         /// <summary>
@@ -130,8 +180,14 @@ namespace MvxCanastaChampions.Core.ViewModels
         /// Also populates CompetitionID and GameID if they are populated within the GamePlayerModel.
         /// </summary>
         /// <param name="parameter"></param>
-        private void UnPackParameterVariable(List<GamePlayerModel> parameter)
+        private void UnpackPlayerVariable(List<GamePlayerModel> parameter)
         {
+            if (parameter.Count == 1)
+            {
+                _competitionID = parameter.ElementAt(0).CompetitionID;
+                return;
+            }
+
             IEnumerable<GamePlayerModel> team = parameter.Where(x => x.TeamNumber == 1);
 
             if (team.ElementAt(0).CompetitionID != -1)
@@ -155,28 +211,31 @@ namespace MvxCanastaChampions.Core.ViewModels
             }
         }
 
-        private GameModel _game = new GameModel();
-
-        public GameModel Game
+        /// <summary>
+        /// Load an existing Game and/or Round that was incomplete.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <param name="gameRoundID"></param>
+        private void LoadGame(long competitionID, long gameID, long gameRoundID)
         {
-            get { return _game; }
-            set { 
-                _game = value;
-                SetProperty(ref _game, value);
-            }
-        }
+            _gameID = gameID;
+            Game = GameServices.LoadGame(competitionID, gameID);
+            
+            // Load players
+            List<GamePlayerModel> players = GameServices.GetCurrentPlayers(competitionID, gameID);
+            UnpackPlayerVariable(players);
 
-
-        private RoundModel _round = new RoundModel();
-
-        public RoundModel GameRound
-        {
-            get { return _round; }
-            set
+            if (gameRoundID > 0)
             {
-                _round = value;
-                SetProperty(ref _round, value);
+                GameRound = GameServices.LoadRound(gameRoundID);
+                long dealerPlayerID = GameRound.Dealer.PlayerID;
+                GameRound.Dealer = players.Where(x => x.PlayerID == dealerPlayerID).FirstOrDefault();
+                System.Diagnostics.Debug.WriteLine($"Dealer is {GameRound.Dealer.PlayerName}");
             }
+
+
+            System.Diagnostics.Debug.WriteLine($"==> Unfinished gameID found {gameID} (roundID = {gameRoundID})");
         }
 
         #region StartRoundCommand
@@ -271,7 +330,7 @@ namespace MvxCanastaChampions.Core.ViewModels
                 gameStartDateTime: Game.GameStartDateTime,
                 gamePlayers: _gamePlayers);
 
-            UnPackParameterVariable(playerList);
+            UnpackPlayerVariable(playerList);
             System.Diagnostics.Debug.WriteLine($"UnPackParameterVariable Team1Player1: " +
                 $"CompetitionID = {Team1Player1.PlayerName} (PlayerID = {Team1Player1.PlayerID}); " +
                 $"{Team1Player1.CompetitionID}; GameID = {Team1Player1.GameID}; " +

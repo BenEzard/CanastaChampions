@@ -1,7 +1,9 @@
-﻿using MvvmCross.Core;
+﻿using MvvmCross;
+using MvvmCross.Core;
+using MvvmCross.Navigation;
 using MvvmCross.Platforms.Wpf.Core;
 using MvvmCross.Platforms.Wpf.Views;
-
+using MvxCanastaChampions.Core.ViewModels;
 
 namespace MvxCanastaChampions.Wpf
 {
@@ -13,6 +15,7 @@ namespace MvxCanastaChampions.Wpf
         protected override void RegisterSetup()
         {
             this.RegisterSetupType<MvxWpfSetup<MvxCanastaChampions.Core.App>>();
+            //Mvx.IoCProvider.RegisterSingleton<GameViewModel>(GameViewModel);
         }
     }
 }

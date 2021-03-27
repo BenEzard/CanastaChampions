@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CanastaChampions.DataAccess.Models
+﻿namespace CanastaChampions.DataAccess.Models
 {
     public class TeamModel
     {

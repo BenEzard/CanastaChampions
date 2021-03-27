@@ -1,5 +1,6 @@
 ﻿using CanastaChampions.DataAccess.Models;
 using MvvmCross.Commands;
+using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using MvxCanastaChampions.Core.Services;
 using System.Collections.Generic;
@@ -8,6 +9,8 @@ namespace MvxCanastaChampions.Core.ViewModels
 {
     public class GameRoundScoreViewModel : MvxViewModel<RoundModel>
     {
+        private readonly IMvxNavigationService _navigationService;
+
         private RoundModel _gameRound;
         public RoundModel GameRound
         {
@@ -75,7 +78,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             set { 
                 _team1NaturalCanastaCount = value;
                 SetProperty(ref _team1NaturalCanastaCount, value);
-                RaisePropertyChanged(() => Team1Score);
+                RaisePropertyChanged(() => Team1RoundScore);
             }
         }
 
@@ -88,7 +91,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team2NaturalCanastaCount = value;
                 SetProperty(ref _team2NaturalCanastaCount, value);
-                RaisePropertyChanged(() => Team2Score);
+                RaisePropertyChanged(() => Team2RoundScore);
             }
         }
 
@@ -101,7 +104,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team3NaturalCanastaCount = value;
                 SetProperty(ref _team3NaturalCanastaCount, value);
-                RaisePropertyChanged(() => Team3Score);
+                RaisePropertyChanged(() => Team3RoundScore);
             }
         }
         #endregion
@@ -116,7 +119,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team1UnnaturalCanastaCount = value;
                 SetProperty(ref _team1UnnaturalCanastaCount, value);
-                RaisePropertyChanged(() => Team1Score);
+                RaisePropertyChanged(() => Team1RoundScore);
             }
         }
 
@@ -129,7 +132,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team2UnnaturalCanastaCount = value;
                 SetProperty(ref _team2UnnaturalCanastaCount, value);
-                RaisePropertyChanged(() => Team2Score);
+                RaisePropertyChanged(() => Team2RoundScore);
             }
         }
 
@@ -142,7 +145,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team3UnnaturalCanastaCount = value;
                 SetProperty(ref _team3UnnaturalCanastaCount, value);
-                RaisePropertyChanged(() => Team3Score);
+                RaisePropertyChanged(() => Team3RoundScore);
             }
         }
         #endregion
@@ -157,7 +160,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team1Red3Count = value;
                 SetProperty(ref _team1Red3Count, value);
-                RaisePropertyChanged(() => Team1Score);
+                RaisePropertyChanged(() => Team1RoundScore);
             }
         }
 
@@ -170,7 +173,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team2Red3Count = value;
                 SetProperty(ref _team2Red3Count, value);
-                RaisePropertyChanged(() => Team2Score);
+                RaisePropertyChanged(() => Team2RoundScore);
             }
         }
 
@@ -183,7 +186,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team3Red3Count = value;
                 SetProperty(ref _team3Red3Count, value);
-                RaisePropertyChanged(() => Team3Score);
+                RaisePropertyChanged(() => Team3RoundScore);
             }
         }
         #endregion
@@ -198,7 +201,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team1PointsOnHand = value;
                 SetProperty(ref _team1PointsOnHand, value);
-                RaisePropertyChanged(() => Team1Score);
+                RaisePropertyChanged(() => Team1RoundScore);
             }
         }
 
@@ -211,7 +214,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team2PointsOnHand = value;
                 SetProperty(ref _team2PointsOnHand, value);
-                RaisePropertyChanged(() => Team2Score);
+                RaisePropertyChanged(() => Team2RoundScore);
             }
         }
 
@@ -224,7 +227,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team3PointsOnHand = value;
                 SetProperty(ref _team3PointsOnHand, value);
-                RaisePropertyChanged(() => Team3Score);
+                RaisePropertyChanged(() => Team3RoundScore);
             }
         }
         #endregion
@@ -243,13 +246,13 @@ namespace MvxCanastaChampions.Core.ViewModels
                     case 0:
                         break;
                     case 1:
-                        RaisePropertyChanged(() => Team1Score);
+                        RaisePropertyChanged(() => Team1RoundScore);
                         break;
                     case 2:
-                        RaisePropertyChanged(() => Team2Score);
+                        RaisePropertyChanged(() => Team2RoundScore);
                         break;
                     case 3:
-                        RaisePropertyChanged(() => Team3Score);
+                        RaisePropertyChanged(() => Team3RoundScore);
                         break;
                 }
                 
@@ -257,35 +260,69 @@ namespace MvxCanastaChampions.Core.ViewModels
         }
         #endregion
 
-        #region TotalScores
-        private int _team1TotalScore;
+        #region RoundScores
+        private int _team1RoundScore;
 
-        public int Team1Score
+        public int Team1RoundScore
         {
             get
             {
-                _team1TotalScore = CalculateScore(1);
+                _team1RoundScore = CalculateScore(1);
+                return _team1RoundScore;
+            }
+        }
+
+        private int _team2RoundScore;
+
+        public int Team2RoundScore
+        {
+            get
+            {
+                _team2RoundScore = CalculateScore(2);
+                return _team2RoundScore;
+            }
+        }
+        private int _team3RoundScore;
+
+        public int Team3RoundScore
+        {
+            get
+            {
+                _team3RoundScore = CalculateScore(3);
+                return _team3RoundScore;
+            }
+        }
+        #endregion
+
+        #region TotalScores
+        private int _team1TotalScore;
+
+        public int Team1TotalScore
+        {
+            get
+            {
+                _team1TotalScore += Team1RoundScore;
                 return _team1TotalScore;
             }
         }
 
         private int _team2TotalScore;
 
-        public int Team2Score
+        public int Team2TotalScore
         {
             get
             {
-                _team2TotalScore = CalculateScore(2);
+                _team2TotalScore += Team2RoundScore;
                 return _team2TotalScore;
             }
         }
         private int _team3TotalScore;
 
-        public int Team3Score
+        public int Team3TotalScore
         {
             get
             {
-                _team1TotalScore = CalculateScore(2);
+                _team3TotalScore += Team3RoundScore;
                 return _team3TotalScore;
             }
         }
@@ -300,7 +337,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             set { 
                 _team1PenaltyCount = value;
                 SetProperty(ref _team1PenaltyCount, value);
-                RaisePropertyChanged(() => Team1Score);
+                RaisePropertyChanged(() => Team1RoundScore);
             }
         }
 
@@ -313,7 +350,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team2PenaltyCount = value;
                 SetProperty(ref _team2PenaltyCount, value);
-                RaisePropertyChanged(() => Team2Score);
+                RaisePropertyChanged(() => Team2RoundScore);
             }
         }
 
@@ -326,7 +363,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team3PenaltyCount = value;
                 SetProperty(ref _team3PenaltyCount, value);
-                RaisePropertyChanged(() => Team3Score);
+                RaisePropertyChanged(() => Team3RoundScore);
             }
         }
         #endregion
@@ -341,7 +378,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team1FinishingBonus = value;
                 SetProperty(ref _team1FinishingBonus, value);
-                RaisePropertyChanged(() => Team1Score);
+                RaisePropertyChanged(() => Team1RoundScore);
             }
         }
 
@@ -354,7 +391,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team2FinishingBonus = value;
                 SetProperty(ref _team2FinishingBonus, value);
-                RaisePropertyChanged(() => Team2Score);
+                RaisePropertyChanged(() => Team2RoundScore);
             }
         }
         
@@ -367,7 +404,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team3FinishingBonus = value;
                 SetProperty(ref _team3FinishingBonus, value);
-                RaisePropertyChanged(() => Team3Score);
+                RaisePropertyChanged(() => Team3RoundScore);
             }
         }
 
@@ -379,8 +416,22 @@ namespace MvxCanastaChampions.Core.ViewModels
         {
             SaveScores();
             FinaliseRound();
+
+            // TODO check round for any achievements
+            // TODO check total score for end of game.
+            // 
+
+            List<GamePlayerModel> players = GameServices.GetCurrentPlayers(GameRound.CompetitionID, GameRound.GameID);
+            
+            foreach (GamePlayerModel p in players)
+                System.Diagnostics.Debug.WriteLine($"::::==> Player {p.PlayerName} on Team {p.TeamNumber}");
+
+            _navigationService.Navigate<GameViewModel, List<GamePlayerModel>>(players);
         }
 
+        /// <summary>
+        /// Save the scores for the Round.
+        /// </summary>
         public void SaveScores()
         {
             // Insert scores for each team.
@@ -413,8 +464,9 @@ namespace MvxCanastaChampions.Core.ViewModels
                 GameServices.FinaliseRound(GameRound.GameRoundID, GameRound.RoundEndDateTime, Team3.TeamID);
         }
 
-        public GameRoundScoreViewModel()
+        public GameRoundScoreViewModel(IMvxNavigationService navigationService)
         {
+            _navigationService = navigationService;
             ScoringCompletedCommand =  new MvxCommand(ScoringCompleted);
         }
 
@@ -439,6 +491,11 @@ namespace MvxCanastaChampions.Core.ViewModels
                 Team3PenaltyCount = GameServices.GetTeamPenaltyCount(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team3.TeamID);
         }
 
+        /// <summary>
+        /// Calculate Score for the given consecutive team number
+        /// </summary>
+        /// <param name="teamNumber"></param>
+        /// <returns></returns>
         public int CalculateScore(int teamNumber)
         {
             // Setup temp variables
@@ -508,6 +565,8 @@ namespace MvxCanastaChampions.Core.ViewModels
 
             if (CuttingBonus && teamNumber == GameRound.Dealer.TeamNumber)
                 totalScore += 100;
+
+            totalScore -= penaltyCount;
 
             return totalScore;
         }

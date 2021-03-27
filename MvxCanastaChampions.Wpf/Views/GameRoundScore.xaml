@@ -32,7 +32,10 @@
             <!-- Finishing Bonus -->
             <ColumnDefinition Width="*" />
 
-            <!-- Total -->
+            <!-- Round Total -->
+            <ColumnDefinition Width="*" />
+
+            <!-- Grand Total -->
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -59,7 +62,7 @@
         </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Center" >
             <Image Source="/Images/unnatural_canasta.png" Width="100" />
-            <TextBlock TextWrapping="Wrap">Unnatural Canasta Count</TextBlock>
+            <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">Unnatural Canasta Count</TextBlock>
         </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Column="4" Grid.Row="1" HorizontalAlignment="Center" >
             <Image Source="/Images/red-three.png" Width="80" />
@@ -73,7 +76,11 @@
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Grid.Column="7" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" >
-            <TextBlock TextWrapping="Wrap">Total Score</TextBlock>
+            <TextBlock TextWrapping="Wrap">Round Score</TextBlock>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Grid.Column="8" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <TextBlock TextWrapping="Wrap">TOTAL</TextBlock>
         </StackPanel>
 
         <!-- Team Names -->
@@ -124,12 +131,20 @@
         <RadioButton GroupName="FinishingBonus"  Content="3"  IsChecked="{Binding Team3FinishingBonus}" IsEnabled="{Binding IsTeam3Playing}"
                      Grid.Column="6" Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-        <!-- Total -->
-        <TextBlock Grid.Column="8" Grid.Row="2" Text="{Binding Team1Score}"
+        <!-- Round Total -->
+        <TextBlock Grid.Column="7" Grid.Row="2" Text="{Binding Team1RoundScore}"
                    FontSize="20" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <TextBlock Grid.Column="8" Grid.Row="3" Text="{Binding Team2Score}"
+        <TextBlock Grid.Column="7" Grid.Row="3" Text="{Binding Team2RoundScore}"
                    FontSize="20" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <TextBlock Grid.Column="8" Grid.Row="4" Text="{Binding Team3Score}"
+        <TextBlock Grid.Column="7" Grid.Row="4" Text="{Binding Team3RoundScore}"
+                   FontSize="20" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <!-- Game Total -->
+        <TextBlock Grid.Column="8" Grid.Row="2" Text="{Binding Team1TotalScore}"
+                   FontSize="20" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="8" Grid.Row="3" Text="{Binding Team2TotalScore}"
+                   FontSize="20" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="8" Grid.Row="4" Text="{Binding Team3TotalScore}"
                    FontSize="20" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
         <!-- Button -->

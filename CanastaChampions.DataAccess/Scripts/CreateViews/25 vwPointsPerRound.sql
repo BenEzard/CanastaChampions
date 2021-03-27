@@ -50,8 +50,9 @@ SELECT
     Points_CTE.CompetitionID,
     Points_CTE.GameID,
     Points_CTE.GameRoundID,
+    GameRound.GameRoundNumber,
     Points_CTE.TeamID,
-    vwTeam.Player1Name || ' & ' || vwTeam.Player2Name AS TeamNames,
+    vwTeam.TeamName,
     CuttingBonusPoints,
     PenaltyPoints,
     NaturalCanastaPoints,
@@ -59,8 +60,16 @@ SELECT
     RedThreePoints,
     PointsOnHand,
     FinishingPoints,
-    CuttingBonusPoints + PenaltyPoints + NaturalCanastaPoints + UnnaturalCanastaPoints + RedThreePoints + PointsOnHand + FinishingPoints AS TotalPoints
+    CuttingBonusPoints + PenaltyPoints + NaturalCanastaPoints + UnnaturalCanastaPoints + RedThreePoints + PointsOnHand + FinishingPoints AS TotalPoints,
+    WinningTeam.TeamName AS WinningTeam,
+    Players.PlayerName AS DealerName
 FROM
     Points_CTE
 LEFT JOIN vwTeam 
     ON Points_CTE.TeamID = vwTeam.TeamID
+LEFT JOIN vwTeam WinningTeam
+    ON Points_CTE.TeamID = WinningTeam.TeamID   
+LEFT JOIN GameRound
+    ON Points_CTE.GameRoundID = GameRound.GameRoundID
+LEFT JOIN Players
+    ON GameRound.DealerID = Players.PlayerID

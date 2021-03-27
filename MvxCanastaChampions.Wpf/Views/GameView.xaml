@@ -27,34 +27,34 @@
             <TextBlock Text="Team" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
-                <TextBlock Text="{Binding Team1Player1.PlayerName}" VerticalAlignment="Center" Width="100"/>
+                <TextBlock Text="{Binding Team1Player1.PlayerName}" VerticalAlignment="Center" MaxWidth="100"/>
                 <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team1Player1PenaltyCommand" IsEnabled="{Binding IsEndRoundButtonAvailable}"
                     Content="Penalty" VerticalAlignment="Center" Margin="5" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
-                <TextBlock Text="{Binding Team1Player2.PlayerName}" VerticalAlignment="Center" Width="100"/>
+                <TextBlock Text="{Binding Team1Player2.PlayerName}" VerticalAlignment="Center" MaxWidth="100"/>
                 <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team1Player2PenaltyCommand" IsEnabled="{Binding IsEndRoundButtonAvailable}"
                     VerticalAlignment="Center" Margin="5" Content="Penalty" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2">
-                <TextBlock Text="{Binding Team2Player1.PlayerName}" VerticalAlignment="Center"  Width="100" />
+                <TextBlock Text="{Binding Team2Player1.PlayerName}" VerticalAlignment="Center" MaxWidth="100" />
                 <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team2Player1PenaltyCommand" IsEnabled="{Binding IsEndRoundButtonAvailable}"
                     VerticalAlignment="Center" Margin="5" Content="Penalty" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2">
-                <TextBlock Text="{Binding Team2Player2.PlayerName}" VerticalAlignment="Center" Width="100" />
+                <TextBlock Text="{Binding Team2Player2.PlayerName}" VerticalAlignment="Center" MaxWidth="100" />
                 <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team2Player2PenaltyCommand" IsEnabled="{Binding IsEndRoundButtonAvailable}"
                     VerticalAlignment="Center" Margin="5" Content="Penalty" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="3">
-                <TextBlock Text="{Binding Team3Player1.PlayerName}" VerticalAlignment="Center" Width="100" />
+                <TextBlock Text="{Binding Team3Player1.PlayerName}" VerticalAlignment="Center" MaxWidth="100" />
                 <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team3Player2PenaltyCommand" IsEnabled="{Binding IsStartRoundButtonAndTeam3Available}"
                     VerticalAlignment="Center" Margin="5" Content="Penalty" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="3">
-                <TextBlock Text="{Binding Team3Player2.PlayerName}" VerticalAlignment="Center" Width="100" />
+                <TextBlock Text="{Binding Team3Player2.PlayerName}" VerticalAlignment="Center" MaxWidth="100" />
                 <Button Grid.Row="1" Grid.Column="2" mvx:Bi.nd="Command Team3Player2PenaltyCommand" IsEnabled="{Binding IsStartRoundButtonAndTeam3Available}"
                     VerticalAlignment="Center" Margin="5" Content="Penalty" />
             </StackPanel>
@@ -83,14 +83,14 @@
             </StackPanel>
         </Grid>
         <Grid>
-            <DataGrid>
+            <DataGrid ItemsSource="{Binding Results, Mode=TwoWay}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Round" Width="55" Binding="{Binding Name}" />
-                <DataGridTextColumn Header="Team 1" Width="150" Binding="{Binding Age}" />
-                <DataGridTextColumn Header="Team 2" Width="150" Binding="{Binding Age}" />
-                <DataGridTextColumn Header="Team 3" Width="150" Binding="{Binding Age}" />
-                <DataGridTextColumn Header="Winner" Width="100" Binding="{Binding Age}" />
-                <DataGridTextColumn Header="Dealer" Width="100" Binding="{Binding Age}" />
+                    <DataGridTextColumn Header="Round" Width="55" Binding="{Binding RoundNumber}" />
+                <DataGridTextColumn Header="Team 1" Width="150" Binding="{Binding Team1Score}" />
+                <DataGridTextColumn Header="Team 2" Width="150" Binding="{Binding Team2Score}" />
+                <DataGridTextColumn Header="Team 3" Width="150" Binding="{Binding Team3Score}" />
+                <DataGridTextColumn Header="Winner" Width="100" Binding="{Binding WinningTeamName}" />
+                <DataGridTextColumn Header="Dealer" Width="100" Binding="{Binding DealerName}" />
                 </DataGrid.Columns>
         </DataGrid>
         </Grid>

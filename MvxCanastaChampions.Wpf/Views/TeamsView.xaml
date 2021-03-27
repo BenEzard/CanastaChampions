@@ -64,12 +64,16 @@
             <Button IsEnabled="{Binding IsPlayerSelected}" mvx:Bi.nd="Command EditPlayerCommand"
                 Grid.Column="1" Grid.Row="2" Padding="5">Edit Player...</Button>
         </StackPanel>
-            
+
+        <StackPanel Grid.Column="0" Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button mvx:Bi.nd="Command LoadGameCommand"  IsEnabled="{Binding UnfinishedGameExists}" 
+                    Padding="5" Margin="5">Load Incomplete Game</Button>
+        </StackPanel>
         <StackPanel Grid.Column="1" Grid.Row="3">
             <Button mvx:Bi.nd="Command StartGameCommand" IsEnabled="{Binding CanStartGame}"
                 Margin="5" Padding="5">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Start Game" VerticalAlignment="Center"/>
+                    <TextBlock Text="Start New Game" VerticalAlignment="Center"/>
                     <Image Source="/Images/arrow-right.png" Width="22"></Image>
                 </StackPanel>
             </Button>
