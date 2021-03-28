@@ -566,7 +566,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             if (CuttingBonus && teamNumber == GameRound.Dealer.TeamNumber)
                 totalScore += 100;
 
-            totalScore -= penaltyCount;
+            totalScore -= penaltyCount * 100;
 
             return totalScore;
         }

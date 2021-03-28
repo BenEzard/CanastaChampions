@@ -156,6 +156,12 @@ namespace CanastaChampions.DataAccess.Services
             return results;
         }
 
+        /// <summary>
+        /// Get the Game results, 1 row for each Round, as displayed on GameView.xaml
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <returns></returns>
         public static List<RoundResultModel> GetResults(long competitionID, long gameID)
         {
             List<RoundResultModel> results = new List<RoundResultModel>();

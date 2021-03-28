@@ -92,11 +92,11 @@
             Grid.Column="0" Grid.Row="4" FontSize="20" VerticalAlignment="Center" TextWrapping="Wrap" />
 
         <!-- Penalty Count -->
-        <TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding Team1PenaltyCount}"
+        <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Team1PenaltyCount}"
                    FontSize="20" Width="50" Height="30" VerticalAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center" />
-        <TextBlock Grid.Column="3" Grid.Row="2" Text="{Binding Team2PenaltyCount}"
+        <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding Team2PenaltyCount}"
                    FontSize="20" Width="50" Height="30" VerticalAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center" />
-        <TextBlock Grid.Column="4" Grid.Row="3" Text="{Binding Team3PenaltyCount}" IsEnabled="{Binding IsTeam3Playing}"
+        <TextBlock Grid.Column="1" Grid.Row="4" Text="{Binding Team3PenaltyCount}" IsEnabled="{Binding IsTeam3Playing}"
                    FontSize="20" Width="50" Height="30" VerticalAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center" />
         
         <!-- Natural Canastas -->
