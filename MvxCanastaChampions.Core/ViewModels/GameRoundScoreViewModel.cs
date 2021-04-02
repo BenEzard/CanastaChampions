@@ -4,6 +4,7 @@ using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using MvxCanastaChampions.Core.Services;
 using System.Collections.Generic;
+using System.Media;
 
 namespace MvxCanastaChampions.Core.ViewModels
 {
@@ -22,6 +23,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             }
         }
 
+        #region Teams
         private bool _isTeam3Playing = false;
         public bool IsTeam3Playing
         {
@@ -67,7 +69,44 @@ namespace MvxCanastaChampions.Core.ViewModels
                 SetProperty(ref _team3, value);
             }
         }
+        #endregion
 
+        #region ScoreBeforeRound
+        private int _team1ScoreBeforeRound = 0;
+
+        public int Team1ScoreBeforeRound
+        {
+            get { return _team1ScoreBeforeRound; }
+            set { 
+                _team1ScoreBeforeRound = value;
+                SetProperty(ref _team1ScoreBeforeRound, value);
+            }
+        }
+
+        private int _team2ScoreBeforeRound = 0;
+
+        public int Team2ScoreBeforeRound
+        {
+            get { return _team2ScoreBeforeRound; }
+            set
+            {
+                _team2ScoreBeforeRound = value;
+                SetProperty(ref _team2ScoreBeforeRound, value);
+            }
+        }
+
+        private int _team3ScoreBeforeRound = 0;
+
+        public int Team3ScoreBeforeRound
+        {
+            get { return _team3ScoreBeforeRound; }
+            set
+            {
+                _team3ScoreBeforeRound = value;
+                SetProperty(ref _team3ScoreBeforeRound, value);
+            }
+        }
+        #endregion
 
         #region NaturalCanasta
         private int _team1NaturalCanastaCount = 0;
@@ -78,6 +117,14 @@ namespace MvxCanastaChampions.Core.ViewModels
             set { 
                 _team1NaturalCanastaCount = value;
                 SetProperty(ref _team1NaturalCanastaCount, value);
+
+                /* below code doesn't work
+                 * intent was to de-select the finish if the number of canasta's is set back to 0.
+                 * if (_team1NaturalCanastaCount == 0 && _team1FinishingBonus)
+                {
+                    Team1FinishingBonus = false;
+                }*/
+
                 RaisePropertyChanged(() => Team1RoundScore);
             }
         }
@@ -295,37 +342,14 @@ namespace MvxCanastaChampions.Core.ViewModels
         #endregion
 
         #region TotalScores
-        private int _team1TotalScore;
-
         public int Team1TotalScore
-        {
-            get
-            {
-                _team1TotalScore += Team1RoundScore;
-                return _team1TotalScore;
-            }
-        }
-
-        private int _team2TotalScore;
+            => _team1ScoreBeforeRound + Team1RoundScore;
 
         public int Team2TotalScore
-        {
-            get
-            {
-                _team2TotalScore += Team2RoundScore;
-                return _team2TotalScore;
-            }
-        }
-        private int _team3TotalScore;
+            => _team2ScoreBeforeRound + Team2RoundScore;
 
         public int Team3TotalScore
-        {
-            get
-            {
-                _team3TotalScore += Team3RoundScore;
-                return _team3TotalScore;
-            }
-        }
+            => _team3ScoreBeforeRound + Team3RoundScore;
         #endregion
 
         #region PenaltyCount
@@ -376,9 +400,35 @@ namespace MvxCanastaChampions.Core.ViewModels
             get { return _team1FinishingBonus; }
             set
             {
-                _team1FinishingBonus = value;
-                SetProperty(ref _team1FinishingBonus, value);
-                RaisePropertyChanged(() => Team1RoundScore);
+                if (_team1NaturalCanastaCount + _team1UnnaturalCanastaCount == 0)
+                    SystemSounds.Beep.Play();
+                else
+                {
+                    DeselectOtherFinishing(1);
+                    _team1FinishingBonus = value;
+                    SetProperty(ref _team1FinishingBonus, value);
+                    RaisePropertyChanged(() => Team1RoundScore);
+                    RaisePropertyChanged(() => CanScoringBeCompleted);
+                }
+            }
+        }
+
+        private void DeselectOtherFinishing(int teamSelected)
+        {
+            switch (teamSelected)
+            {
+                case 1:
+                    Team2FinishingBonus = false;
+                    Team3FinishingBonus = false;
+                    break;
+                case 2:
+                    Team1FinishingBonus = false;
+                    Team3FinishingBonus = false;
+                    break;
+                case 3:
+                    Team1FinishingBonus = false;
+                    Team3FinishingBonus = false;
+                    break;
             }
         }
 
@@ -389,9 +439,15 @@ namespace MvxCanastaChampions.Core.ViewModels
             get { return _team2FinishingBonus; }
             set
             {
-                _team2FinishingBonus = value;
-                SetProperty(ref _team2FinishingBonus, value);
-                RaisePropertyChanged(() => Team2RoundScore);
+                if (_team2NaturalCanastaCount + _team2UnnaturalCanastaCount == 0)
+                    SystemSounds.Beep.Play();
+                else
+                {
+                    _team2FinishingBonus = value;
+                    SetProperty(ref _team2FinishingBonus, value);
+                    RaisePropertyChanged(() => Team2RoundScore);
+                    RaisePropertyChanged(() => CanScoringBeCompleted);
+                }
             }
         }
         
@@ -402,13 +458,21 @@ namespace MvxCanastaChampions.Core.ViewModels
             get { return _team3FinishingBonus; }
             set
             {
-                _team3FinishingBonus = value;
-                SetProperty(ref _team3FinishingBonus, value);
-                RaisePropertyChanged(() => Team3RoundScore);
+                if (_team3NaturalCanastaCount + _team3UnnaturalCanastaCount == 0)
+                    SystemSounds.Beep.Play();
+                else
+                {
+                    SetProperty(ref _team3FinishingBonus, value);
+                    RaisePropertyChanged(() => Team3RoundScore);
+                    RaisePropertyChanged(() => CanScoringBeCompleted);
+                }
             }
         }
 
         #endregion
+
+        public bool CanScoringBeCompleted
+            => (Team1FinishingBonus || Team2FinishingBonus || Team3FinishingBonus) ? true : false;
 
         public IMvxCommand ScoringCompletedCommand { get; set; }
 
@@ -438,7 +502,9 @@ namespace MvxCanastaChampions.Core.ViewModels
             GameServices.AddTeamRoundScore(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team1.TeamID, Team1NaturalCanastaCount, Team1UnnaturalCanastaCount, Team1Red3Count, Team1PointsOnHand);
             GameServices.AddTeamRoundScore(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team2.TeamID, Team2NaturalCanastaCount, Team2UnnaturalCanastaCount, Team2Red3Count, Team2PointsOnHand);
             if (IsTeam3Playing)
+            {
                 GameServices.AddTeamRoundScore(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team3.TeamID, Team3NaturalCanastaCount, Team3UnnaturalCanastaCount, Team3Red3Count, Team3PointsOnHand);
+            }
 
             // Insert Finishing Bonus
             if (Team1FinishingBonus)
@@ -560,7 +626,7 @@ namespace MvxCanastaChampions.Core.ViewModels
                 totalScore -= pointsOnHand;
             }
 
-            if (finishingBonus)
+            if (finishingBonus && hasCanasta)
                 totalScore += 100;
 
             if (CuttingBonus && teamNumber == GameRound.Dealer.TeamNumber)

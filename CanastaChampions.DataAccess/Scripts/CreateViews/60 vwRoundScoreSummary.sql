@@ -43,14 +43,17 @@ LEFT JOIN vwPointsPerRound Team1
     ON GameTeams_CTE.CompetitionID = Team1.CompetitionID
     AND GameTeams_CTE.GameID = Team1.GameID
     AND GameTeams_CTE.Team1ID = Team1.TeamID
+    AND GameRound.GameRoundID = Team1.GameRoundID
 LEFT JOIN vwPointsPerRound Team2
     ON GameTeams_CTE.CompetitionID = Team2.CompetitionID
     AND GameTeams_CTE.GameID = Team2.GameID
     AND GameTeams_CTE.Team2ID = Team2.TeamID
+    AND GameRound.GameRoundID = Team2.GameRoundID
 LEFT JOIN vwPointsPerRound Team3
     ON GameTeams_CTE.CompetitionID = Team3.CompetitionID
     AND GameTeams_CTE.GameID = Team3.GameID
     AND GameTeams_CTE.Team3ID = Team3.TeamID
+    AND GameRound.GameRoundID = Team3.GameRoundID
 ORDER BY GameRound.CompetitionID,
     GameRound.GameID,
     GameRound.GameRoundNumber

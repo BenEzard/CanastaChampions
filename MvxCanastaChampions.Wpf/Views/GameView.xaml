@@ -59,8 +59,10 @@
                     VerticalAlignment="Center" Margin="5" Content="Penalty" />
             </StackPanel>
 
-            <TextBlock Text="Score" Grid.Row="2" Grid.Column="0" 
-                FontSize="20" Margin="0,0,10,0"/>
+            <TextBlock Text="Score" Grid.Row="2" Grid.Column="0" FontSize="20" Margin="0,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Team1TotalScore}" Grid.Row="2" Grid.Column="1" FontSize="20" Margin="0,0,10,0" HorizontalAlignment="Center" />
+            <TextBlock Text="{Binding Team2TotalScore}" Grid.Row="2" Grid.Column="2" FontSize="20" Margin="0,0,10,0" HorizontalAlignment="Center" />
+            <TextBlock Text="{Binding Team3TotalScore}" Grid.Row="2" Grid.Column="3" FontSize="20" Margin="0,0,10,0" HorizontalAlignment="Center" />
         </Grid>
 
         <Grid DockPanel.Dock="Bottom">
@@ -79,11 +81,12 @@
                         FontSize="20" Margin="10 0" Padding="10 5" >Start Round</Button>
                 <Button mvx:Bi.nd="Command EndRoundCommand" IsEnabled="{Binding IsEndRoundButtonAvailable}"
                         FontSize="20" Padding="10 5">End Round</Button>
-                <Button FontSize="20" Margin="60 0 0 0" mvx:Bi.nd="" Padding="10 5">End Game</Button>
+                <Button mvx:Bi.nd="Command EndGameCommand" 
+                    FontSize="20" Margin="60 0 0 0" Padding="10 5">End Game</Button>
             </StackPanel>
         </Grid>
         <Grid>
-            <DataGrid ItemsSource="{Binding Results, Mode=TwoWay}">
+            <DataGrid ItemsSource="{Binding Results, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Round" Width="55" Binding="{Binding RoundNumber}" />
                 <DataGridTextColumn Header="Team 1" Width="150" Binding="{Binding Team1Score}" />

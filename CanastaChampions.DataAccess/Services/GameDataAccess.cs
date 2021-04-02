@@ -782,6 +782,28 @@ namespace CanastaChampions.DataAccess.Services
             _conn.Dispose();
         }
 
+        public static void UpdateGameInformation(long competitionID, long gameID, DateTime endOfGameDateTime)
+        {
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            string sql = "UPDATE GameRound" +
+                " SET GameEndDateTime = @endOfGameDateTime" +
+                " WHERE CompetitionID = @competitionID" +
+                " AND GameID = @gameID";
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.Parameters.AddWithValue("@endOfGameDateTime", endOfGameDateTime);
+                command.ExecuteNonQuery();
+            }
+
+            _conn.Dispose();
+        }
+
         /// <summary>
         /// 
         /// </summary>

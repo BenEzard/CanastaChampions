@@ -3,6 +3,7 @@ HIGH PRIORITY
 - RemovePlayer() method which logically deletes them from Players, RegisteredPlayers and Teams
 - Updating the Team Number on the UI for TeamsView
 - Prevent the scoring from being completed until a winner has been chosen.
+- Prevent a finishing bonus without a canasta.
 - Turn off auto-grid columns.
 
 MEDIUM PRIORITY

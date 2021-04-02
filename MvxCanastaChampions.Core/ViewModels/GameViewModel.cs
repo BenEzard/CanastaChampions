@@ -106,6 +106,42 @@ namespace MvxCanastaChampions.Core.ViewModels
         }
         #endregion
 
+        private int _team1TotalScore = 0;
+
+        public int Team1TotalScore
+        {
+            get { return _team1TotalScore; }
+            set { 
+                _team1TotalScore = value;
+                SetProperty(ref _team1TotalScore, value);
+            }
+        }
+
+        private int _team2TotalScore = 0;
+
+        public int Team2TotalScore
+        {
+            get { return _team2TotalScore; }
+            set
+            {
+                _team2TotalScore = value;
+                SetProperty(ref _team2TotalScore, value);
+            }
+        }
+
+        private int _team3TotalScore = 0;
+
+        public int Team3TotalScore
+        {
+            get { return _team3TotalScore; }
+            set
+            {
+                _team3TotalScore = value;
+                SetProperty(ref _team3TotalScore, value);
+            }
+        }
+
+
         private long _competitionID;
         private long _gameID;
 
@@ -168,8 +204,6 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 System.Diagnostics.Debug.WriteLine($"==> Unfinished gameID found {gameID} (roundID = {gameRoundID})");
                 LoadGame(_competitionID, gameID, gameRoundID);
-
-                Results = new MvxObservableCollection<RoundResultModel>(GameServices.GetResults(_competitionID, _gameID));
             }
             else 
                 StartGame();
@@ -234,6 +268,11 @@ namespace MvxCanastaChampions.Core.ViewModels
                 System.Diagnostics.Debug.WriteLine($"Dealer is {GameRound.Dealer.PlayerName}");
             }
 
+            Results.Clear();
+            Results = new MvxObservableCollection<RoundResultModel>(GameServices.GetResults(_competitionID, _gameID));
+            Team1TotalScore = Results.Sum(x => x.Team1Score);
+            Team2TotalScore = Results.Sum(x => x.Team2Score);
+            Team3TotalScore = Results.Sum(x => x.Team3Score);
 
             System.Diagnostics.Debug.WriteLine($"==> Unfinished gameID found {gameID} (roundID = {gameRoundID})");
         }
@@ -266,37 +305,66 @@ namespace MvxCanastaChampions.Core.ViewModels
 
             _navigationService.Navigate<GameRoundScoreViewModel, RoundModel>(GameRound);
         }
+        #endregion
+
+        #region EndGameCommand
+        public IMvxCommand EndGameCommand { get; set; }
+
+        public void EndGame()
+        {
+            Game.GameEndDateTime = DateTime.Now;
+
+            // TODO check to see if 5000 has been reached, if so
+            // TODO check end game achievements
+            // TODO present score
+
+            GameServices.FinaliseGame(Game.CompetitionID, Game.GameID, Game.GameEndDateTime);
+
+            _navigationService.Navigate<GameRoundScoreViewModel, RoundModel>(GameRound);
+        }
         #endregion 
 
         public IMvxCommand Team1Player1PenaltyCommand { get; set; }
 
         public void Team1Player1Penalty()
-            => GameServices.AddPlayerPenalty(Team1Player1, _round.GameRoundID);
+        {
+            GameServices.AddPlayerPenalty(Team1Player1, _round.GameRoundID);
+        }
 
         public IMvxCommand Team1Player2PenaltyCommand { get; set; }
 
         public void Team1Player2Penalty()
-            => GameServices.AddPlayerPenalty(Team1Player2, _round.GameRoundID);
+        {
+            GameServices.AddPlayerPenalty(Team1Player2, _round.GameRoundID);
+        }
 
         public IMvxCommand Team2Player1PenaltyCommand { get; set; }
 
         public void Team2Player1Penalty()
-            => GameServices.AddPlayerPenalty(Team2Player1, _round.GameRoundID);
+        {
+            GameServices.AddPlayerPenalty(Team2Player1, _round.GameRoundID);
+        }
 
         public IMvxCommand Team2Player2PenaltyCommand { get; set; }
 
         public void Team2Player2Penalty()
-            => GameServices.AddPlayerPenalty(Team2Player2, _round.GameRoundID);
+        {
+            GameServices.AddPlayerPenalty(Team2Player2, _round.GameRoundID);
+        }
 
         public IMvxCommand Team3Player1PenaltyCommand { get; set; }
 
         public void Team3Player1Penalty()
-            => GameServices.AddPlayerPenalty(Team3Player1, _round.GameRoundID);
+        {
+            GameServices.AddPlayerPenalty(Team3Player1, _round.GameRoundID);
+        }
 
         public IMvxCommand Team3Player2PenaltyCommand { get; set; }
 
         public void Team3Player2Penalty()
-            => GameServices.AddPlayerPenalty(Team3Player2, _round.GameRoundID);
+        {
+            GameServices.AddPlayerPenalty(Team3Player2, _round.GameRoundID);
+        }
 
         public bool IsEndRoundButtonAvailable
             => GameRound.GameRoundID == -1 ? false : true;
@@ -312,6 +380,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             _navigationService = navigationService;
             StartRoundCommand = new MvxCommand(StartRound);
             EndRoundCommand = new MvxCommand(EndRound);
+            EndGameCommand = new MvxCommand(EndGame);
             Team1Player1PenaltyCommand = new MvxCommand(Team1Player1Penalty);
             Team1Player2PenaltyCommand = new MvxCommand(Team1Player2Penalty);            
             Team2Player1PenaltyCommand = new MvxCommand(Team2Player1Penalty);

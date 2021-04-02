@@ -244,6 +244,9 @@ namespace MvxCanastaChampions.Core.Services
         public static void FinaliseRound(long gameRoundID, DateTime endOfRoundDateTime, long winningTeamID)
             => GameDataAccess.UpdateRoundInformation(gameRoundID, endOfRoundDateTime, winningTeamID);
 
+        public static void FinaliseGame(long competitionID, long gameID, DateTime endOfGameDateTime)
+            => GameDataAccess.UpdateGameInformation(competitionID, gameID, endOfGameDateTime);
+
         public static List<GamePlayerModel> GetCurrentPlayers(long competitionID, long gameID)
             => GameDataAccess.GetPlayers(competitionID, gameID);
     }

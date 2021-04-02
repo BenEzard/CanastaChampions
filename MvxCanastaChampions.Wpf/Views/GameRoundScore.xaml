@@ -124,11 +124,11 @@
                  Width="70" Height="30" FontSize="18" HorizontalAlignment="Center" />
         
         <!-- Finishing Bonus -->
-        <RadioButton GroupName="FinishingBonus" Content="1" IsChecked="{Binding Team1FinishingBonus}"
+        <CheckBox IsChecked="{Binding Team1FinishingBonus}"
                      Grid.Column="6" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <RadioButton GroupName="FinishingBonus"  Content="2" IsChecked="{Binding Team2FinishingBonus}"
+        <CheckBox IsChecked="{Binding Team2FinishingBonus}"
                      Grid.Column="6" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <RadioButton GroupName="FinishingBonus"  Content="3"  IsChecked="{Binding Team3FinishingBonus}" IsEnabled="{Binding IsTeam3Playing}"
+        <CheckBox IsChecked="{Binding Team3FinishingBonus}" IsEnabled="{Binding IsTeam3Playing}"
                      Grid.Column="6" Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
         <!-- Round Total -->
@@ -149,7 +149,7 @@
 
         <!-- Button -->
         <StackPanel Grid.Column="0" Grid.ColumnSpan="8" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
-            <CheckBox Content="Cutting Bonus" IsChecked="{Binding CuttingBonus}"
+            <CheckBox Content="Cutting Bonus" IsChecked="{Binding CuttingBonus}" IsEnabled="{Binding CanScoringBeCompleted}"
                       VerticalAlignment="Center"/>
             <Button Padding="5" Margin="50 0 0 0" mvx:Bi.nd="Command ScoringCompletedCommand">Scoring Completed</Button>
         </StackPanel>
