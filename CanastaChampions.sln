@@ -3,12 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CanastaChampions.Domain", "CanastaChampions.Domain\CanastaChampions.Domain.csproj", "{374B882D-BED2-45B7-A018-8207A10D3A95}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CanastaChampions.Cmd", "CanastaChampions.Cmd\CanastaChampions.Cmd.csproj", "{86228D2A-EB6E-4FA4-873A-89C3ABD8BB1D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CanastaChampions.Data", "CanastaChampions.Data\CanastaChampions.Data.csproj", "{B61D1646-9CA7-4A14-A3F8-0A38E2DA24EE}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0DE090E5-C269-4B38-B0A9-5B0B92CEFA20}"
 	ProjectSection(SolutionItems) = preProject
 		WishList.txt = WishList.txt
@@ -26,18 +20,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{374B882D-BED2-45B7-A018-8207A10D3A95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{374B882D-BED2-45B7-A018-8207A10D3A95}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{374B882D-BED2-45B7-A018-8207A10D3A95}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{374B882D-BED2-45B7-A018-8207A10D3A95}.Release|Any CPU.Build.0 = Release|Any CPU
-		{86228D2A-EB6E-4FA4-873A-89C3ABD8BB1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{86228D2A-EB6E-4FA4-873A-89C3ABD8BB1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{86228D2A-EB6E-4FA4-873A-89C3ABD8BB1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{86228D2A-EB6E-4FA4-873A-89C3ABD8BB1D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B61D1646-9CA7-4A14-A3F8-0A38E2DA24EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B61D1646-9CA7-4A14-A3F8-0A38E2DA24EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B61D1646-9CA7-4A14-A3F8-0A38E2DA24EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B61D1646-9CA7-4A14-A3F8-0A38E2DA24EE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{832D2A6D-21E3-46DF-938B-322436ABE9F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{832D2A6D-21E3-46DF-938B-322436ABE9F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{832D2A6D-21E3-46DF-938B-322436ABE9F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
