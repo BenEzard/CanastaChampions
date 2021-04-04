@@ -12,4 +12,10 @@
     <ProjectReference Include="..\CanastaChampions.DataAccess\CanastaChampions.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="PresentationCore">
+      <HintPath>C:\Program Files (x86)\dotnet\shared\Microsoft.WindowsDesktop.App\5.0.4\PresentationCore.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
