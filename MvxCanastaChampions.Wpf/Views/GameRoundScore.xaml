@@ -149,7 +149,7 @@
 
         <!-- Button -->
         <StackPanel Grid.Column="0" Grid.ColumnSpan="8" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
-            <CheckBox Content="Cutting Bonus" IsChecked="{Binding CuttingBonus}" IsEnabled="{Binding CanScoringBeCompleted}"
+            <CheckBox Content="Cutting Bonus" IsChecked="{Binding CuttingBonus}"
                       VerticalAlignment="Center"/>
             <Button Padding="5" Margin="50 0 0 0" mvx:Bi.nd="Command ScoringCompletedCommand">Scoring Completed</Button>
         </StackPanel>

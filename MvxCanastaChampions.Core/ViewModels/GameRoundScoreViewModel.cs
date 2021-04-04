@@ -404,7 +404,7 @@ namespace MvxCanastaChampions.Core.ViewModels
                     SystemSounds.Beep.Play();
                 else
                 {
-                    DeselectOtherFinishing(1);
+                    //DeselectOtherFinishing(1);
                     _team1FinishingBonus = value;
                     SetProperty(ref _team1FinishingBonus, value);
                     RaisePropertyChanged(() => Team1RoundScore);
@@ -413,7 +413,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             }
         }
 
-        private void DeselectOtherFinishing(int teamSelected)
+        /*private void DeselectOtherFinishing(int teamSelected)
         {
             switch (teamSelected)
             {
@@ -430,7 +430,7 @@ namespace MvxCanastaChampions.Core.ViewModels
                     Team3FinishingBonus = false;
                     break;
             }
-        }
+        }*/
 
         private bool _team2FinishingBonus = false;
 
@@ -520,14 +520,19 @@ namespace MvxCanastaChampions.Core.ViewModels
                     GameRound.Dealer.TeamID, GameRound.Dealer.PlayerID);
         }
 
+        /// <summary>
+        /// Finalise the Game Round.
+        /// </summary>
         public void FinaliseRound()
         {
             if (Team1FinishingBonus)
-                GameServices.FinaliseRound(GameRound.GameRoundID, GameRound.RoundEndDateTime, Team1.TeamID);
+                GameRound.WinningTeamID = Team1.TeamID;
             else if (Team2FinishingBonus)
-                GameServices.FinaliseRound(GameRound.GameRoundID, GameRound.RoundEndDateTime, Team2.TeamID);
+                GameRound.WinningTeamID = Team2.TeamID;
             else if (Team3FinishingBonus)
-                GameServices.FinaliseRound(GameRound.GameRoundID, GameRound.RoundEndDateTime, Team3.TeamID);
+                GameRound.WinningTeamID = Team3.TeamID;
+
+            GameServices.FinaliseRound(GameRound);
         }
 
         public GameRoundScoreViewModel(IMvxNavigationService navigationService)

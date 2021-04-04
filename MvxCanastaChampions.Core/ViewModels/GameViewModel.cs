@@ -106,6 +106,7 @@ namespace MvxCanastaChampions.Core.ViewModels
         }
         #endregion
 
+        #region TotalScore
         private int _team1TotalScore = 0;
 
         public int Team1TotalScore
@@ -114,6 +115,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             set { 
                 _team1TotalScore = value;
                 SetProperty(ref _team1TotalScore, value);
+                RaisePropertyChanged(() => Team1Target);
             }
         }
 
@@ -126,6 +128,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team2TotalScore = value;
                 SetProperty(ref _team2TotalScore, value);
+                RaisePropertyChanged(() => Team2Target);
             }
         }
 
@@ -138,9 +141,55 @@ namespace MvxCanastaChampions.Core.ViewModels
             {
                 _team3TotalScore = value;
                 SetProperty(ref _team3TotalScore, value);
+                RaisePropertyChanged(() => Team3Target);
+            }
+        }
+        #endregion
+
+        #region TeamTarget
+        public int Team1Target
+        { get
+            {
+                int target = 50;
+                
+                if (Team1TotalScore >= 3000)
+                    target = 120;
+                else if (Team1TotalScore >= 1500)
+                    target = 90;
+
+                return target; 
+            }
+        }        
+        
+        public int Team2Target
+        { get
+            {
+                int target = 50;
+                
+                if (Team2TotalScore >= 3000)
+                    target = 120;
+                else if (Team2TotalScore >= 1500)
+                    target = 90;
+
+                return target; 
             }
         }
 
+        public int Team3Target
+        {
+            get
+            {
+                int target = 50;
+
+                if (Team3TotalScore >= 3000)
+                    target = 120;
+                else if (Team3TotalScore >= 1500)
+                    target = 90;
+
+                return target;
+            }
+        }
+        #endregion
 
         private long _competitionID;
         private long _gameID;
@@ -268,6 +317,12 @@ namespace MvxCanastaChampions.Core.ViewModels
                 System.Diagnostics.Debug.WriteLine($"Dealer is {GameRound.Dealer.PlayerName}");
             }
 
+            if (GameRound.Dealer == null)
+            {
+                (GamePlayerModel currentDealer, _) = GameServices.GetDealer(_gameID);
+                GameRound.Dealer = currentDealer;
+            }
+
             Results.Clear();
             Results = new MvxObservableCollection<RoundResultModel>(GameServices.GetResults(_competitionID, _gameID));
             Team1TotalScore = Results.Sum(x => x.Team1Score);
@@ -320,7 +375,7 @@ namespace MvxCanastaChampions.Core.ViewModels
 
             GameServices.FinaliseGame(Game.CompetitionID, Game.GameID, Game.GameEndDateTime);
 
-            _navigationService.Navigate<GameRoundScoreViewModel, RoundModel>(GameRound);
+            _navigationService.Navigate<CompetitionViewModel>();
         }
         #endregion 
 
@@ -370,10 +425,13 @@ namespace MvxCanastaChampions.Core.ViewModels
             => GameRound.GameRoundID == -1 ? false : true;
 
         public bool IsStartRoundButtonAvailable
-            => GameRound.GameRoundID == -1 ? true : false;
+            => GameRound.GameRoundID == -1 && FinalScoreNotReached == false ? true : false;
 
         public bool IsStartRoundButtonAndTeam3Available
             => GameRound.GameRoundID == -1  && IsTeam3Utilised ? true : false;
+
+        public bool FinalScoreNotReached
+            => Team1TotalScore >= 5000 || Team2TotalScore >= 5000 || Team3TotalScore >= 5000 ? true : false;
 
         public GameViewModel(IMvxNavigationService navigationService)
         {

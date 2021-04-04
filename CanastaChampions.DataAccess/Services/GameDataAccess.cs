@@ -128,7 +128,7 @@ namespace CanastaChampions.DataAccess.Services
 
             using (SQLiteCommand command = _conn.CreateCommand())
             {
-                command.CommandText = "SELECT GameRoundID, GameRoundNumber, TeamID, TeamName, TotalPoints, WinningTeam, DealerName" +
+                command.CommandText = "SELECT GameRoundID, GameRoundNumber, TeamID, TeamName, TotalPoints, WinningTeam" +
                     " FROM vwPointsPerRound" +
                     " WHERE CompetitionID = @competitionID" +
                     " AND GameID = @gameID";
@@ -146,7 +146,6 @@ namespace CanastaChampions.DataAccess.Services
                         roundResult.Team2Score = reader.GetInt32(3);
                         roundResult.Team3Score = reader.GetInt32(4);
                         roundResult.WinningTeamName = reader.GetString(5);
-                        roundResult.DealerName = reader.GetString(6);
                         results.Add(roundResult);
                     }
                 }
@@ -192,8 +191,6 @@ namespace CanastaChampions.DataAccess.Services
                             roundResult.Team3Score = reader.GetInt32(4);
                         if (reader.IsDBNull(5) == false)
                             roundResult.WinningTeamName = reader.GetString(5);
-                        if (reader.IsDBNull(6) == false)
-                            roundResult.DealerName = reader.GetString(6);
                         results.Add(roundResult);
                     }
                 }
@@ -399,19 +396,45 @@ namespace CanastaChampions.DataAccess.Services
                 int i = 1;
                 foreach (GamePlayerModel gp in playersInPosition)
                 {
-                    command.CommandText = "INSERT INTO GamePlayerPositions (CompetitionID, GameID, PositionNumber, PlayerID, DealerFlag)" +
-                            " VALUES (@competitionID, @gameID, @positionNumber, @playerID, @dealerFlag)";
+                    command.CommandText = "INSERT INTO GamePlayerPositions (CompetitionID, GameID, PositionNumber, PlayerID, TeamID, DealerFlag)" +
+                            " VALUES (@competitionID, @gameID, @positionNumber, @playerID, @teamID, @dealerFlag)";
                     command.Parameters.AddWithValue("@competitionID", gp.CompetitionID);
                     command.Parameters.AddWithValue("@gameID", gp.GameID);
                     command.Parameters.AddWithValue("@positionNumber", i);
                     command.Parameters.AddWithValue("@playerID", gp.PlayerID);
+                    command.Parameters.AddWithValue("@teamID", gp.TeamID);
                     command.Parameters.AddWithValue("@dealerFlag", i == 1 ? 1 : 0);
                     command.ExecuteNonQuery();
                     ++i;
                 }
                 _conn.Dispose();
-
             }
+        }
+
+        /// <summary>
+        /// Update the Dealer for a particular game.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        public static void UpdateDealer(long competitionID, long gameID)
+        {
+            (_, long nextDealerID) = GetDealerIDs(gameID);
+
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "UPDATE GamePlayerPositions" +
+                    " SET DealerFlag = CASE WHEN PlayerID = @nextDealer THEN 1 ELSE 0 END " +
+                        " WHERE CompetitionID = @competitionID" +
+                        " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@nextDealer", nextDealerID);
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.ExecuteNonQuery();
+                }
+                _conn.Dispose();
         }
 
         /// <summary>
@@ -735,16 +758,16 @@ namespace CanastaChampions.DataAccess.Services
                     {
                         currentDealer = new GamePlayerModel
                         {
-                            GameID = reader.GetInt32(0),
-                            PlayerID = reader.GetInt32(1),
+                            GameID = gameID,
+                            PlayerID = reader.GetInt64(1),
                             PlayerName = reader.GetString(2),
                             TeamNumber = reader.GetInt32(3)
                         };
 
                         nextDealer = new GamePlayerModel
                         {
-                            GameID = reader.GetInt32(0),
-                            PlayerID = reader.GetInt32(4),
+                            GameID = gameID,
+                            PlayerID = reader.GetInt64(4),
                             PlayerName = reader.GetString(5),
                             TeamNumber = reader.GetInt32(6)
                         };
@@ -756,7 +779,40 @@ namespace CanastaChampions.DataAccess.Services
             return (currentDealer, nextDealer);
         }
 
-                /// <summary>
+        /// <summary>
+        /// Return the current and next dealer ID in the game.
+        /// </summary>
+        /// <param name="gameID"></param>
+        /// <returns></returns>
+        public static (long currentDealer, long nextDealer) GetDealerIDs(long gameID)
+        {
+            long currentDealer = -1;
+            long nextDealer = -1;
+
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "SELECT CurrentDealerPlayerID, NextDealerPlayerID" +
+                    " FROM vwCurrentAndNextDealer" +
+                    " WHERE GameID = @gameID";
+                command.Parameters.AddWithValue("@gameID", gameID);
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        currentDealer = reader.GetInt64(0);
+                        nextDealer = reader.GetInt64(1);
+                    }
+                }
+            }
+
+            _conn.Dispose();
+            return (currentDealer, nextDealer);
+        }
+
+        /// <summary>
         /// Record the End of the Round.
         /// </summary>
         /// <param name="gameRoundID"></param>
@@ -787,7 +843,7 @@ namespace CanastaChampions.DataAccess.Services
             _conn = new SQLiteConnection(CONNECTION_STRING);
             _conn.Open();
 
-            string sql = "UPDATE GameRound" +
+            string sql = "UPDATE Game" +
                 " SET GameEndDateTime = @endOfGameDateTime" +
                 " WHERE CompetitionID = @competitionID" +
                 " AND GameID = @gameID";

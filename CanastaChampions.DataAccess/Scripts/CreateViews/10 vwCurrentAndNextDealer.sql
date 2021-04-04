@@ -64,9 +64,9 @@ Sub_CTE AS (
            Players Player1 ON GamePlayerPositions.PlayerID = Player1.PlayerID
            LEFT JOIN
            Players Player2 ON GamePlayerPositions2.PlayerID = Player2.PlayerID
-           LEFT JOIN GameTeam_CTE CurrentDealerTeam1 ON (GamePlayerPositions.GameID = CurrentDealerTeam1.GameID AND (Player1.PlayerID = CurrentDealerTeam1.Team1Player1ID OR Player1.PlayerID = CurrentDealerTeam1.Team1Player1ID))
-           LEFT JOIN GameTeam_CTE CurrentDealerTeam2 ON (GamePlayerPositions.GameID = CurrentDealerTeam2.GameID AND (Player1.PlayerID = CurrentDealerTeam2.Team2Player1ID OR Player1.PlayerID = CurrentDealerTeam2.Team2Player1ID))
-           LEFT JOIN GameTeam_CTE CurrentDealerTeam3 ON (GamePlayerPositions.GameID = CurrentDealerTeam3.GameID AND (Player1.PlayerID = CurrentDealerTeam3.Team3Player1ID OR Player1.PlayerID = CurrentDealerTeam3.Team3Player1ID))
-           LEFT JOIN GameTeam_CTE NextDealerTeam1 ON (GamePlayerPositions.GameID = NextDealerTeam1.GameID AND (Player2.PlayerID = NextDealerTeam1.Team1Player1ID OR Player2.PlayerID = NextDealerTeam1.Team1Player1ID))
-           LEFT JOIN GameTeam_CTE NextDealerTeam2 ON (GamePlayerPositions.GameID = NextDealerTeam2.GameID AND (Player2.PlayerID = NextDealerTeam2.Team2Player1ID OR Player2.PlayerID = NextDealerTeam2.Team2Player1ID))
-           LEFT JOIN GameTeam_CTE NextDealerTeam3 ON (GamePlayerPositions.GameID = NextDealerTeam3.GameID AND (Player2.PlayerID = NextDealerTeam3.Team3Player1ID OR Player2.PlayerID = NextDealerTeam3.Team3Player1ID))
+           LEFT JOIN GameTeam_CTE CurrentDealerTeam1 ON (GamePlayerPositions.GameID = CurrentDealerTeam1.GameID AND (Player1.PlayerID = CurrentDealerTeam1.Team1Player1ID OR Player1.PlayerID = CurrentDealerTeam1.Team1Player2ID))
+           LEFT JOIN GameTeam_CTE CurrentDealerTeam2 ON (GamePlayerPositions.GameID = CurrentDealerTeam2.GameID AND (Player1.PlayerID = CurrentDealerTeam2.Team2Player1ID OR Player1.PlayerID = CurrentDealerTeam2.Team2Player2ID))
+           LEFT JOIN GameTeam_CTE CurrentDealerTeam3 ON (GamePlayerPositions.GameID = CurrentDealerTeam3.GameID AND (Player1.PlayerID = CurrentDealerTeam3.Team3Player1ID OR Player1.PlayerID = CurrentDealerTeam3.Team3Player2ID))
+           LEFT JOIN GameTeam_CTE NextDealerTeam1 ON (GamePlayerPositions.GameID = NextDealerTeam1.GameID AND (Player2.PlayerID = NextDealerTeam1.Team1Player1ID OR Player2.PlayerID = NextDealerTeam1.Team1Player2ID))
+           LEFT JOIN GameTeam_CTE NextDealerTeam2 ON (GamePlayerPositions.GameID = NextDealerTeam2.GameID AND (Player2.PlayerID = NextDealerTeam2.Team2Player1ID OR Player2.PlayerID = NextDealerTeam2.Team2Player2ID))
+           LEFT JOIN GameTeam_CTE NextDealerTeam3 ON (GamePlayerPositions.GameID = NextDealerTeam3.GameID AND (Player2.PlayerID = NextDealerTeam3.Team3Player1ID OR Player2.PlayerID = NextDealerTeam3.Team3Player2ID))

@@ -241,8 +241,17 @@ namespace MvxCanastaChampions.Core.Services
         public static List<TeamModel> GetTeams(long competitionID, long gameID)
             => GameDataAccess.GetTeams(competitionID, gameID);
 
-        public static void FinaliseRound(long gameRoundID, DateTime endOfRoundDateTime, long winningTeamID)
-            => GameDataAccess.UpdateRoundInformation(gameRoundID, endOfRoundDateTime, winningTeamID);
+        /// <summary>
+        /// Finalises the Game Round.
+        /// Inserts the end of round time and who won.
+        /// Also moves on the dealer token.
+        /// </summary>
+        /// <param name="gameRound"></param>
+        public static void FinaliseRound(RoundModel gameRound)
+        {
+            GameDataAccess.UpdateRoundInformation(gameRound.GameRoundID, gameRound.RoundEndDateTime, gameRound.WinningTeamID);
+            GameDataAccess.UpdateDealer(gameRound.CompetitionID, gameRound.GameID);
+        }
 
         public static void FinaliseGame(long competitionID, long gameID, DateTime endOfGameDateTime)
             => GameDataAccess.UpdateGameInformation(competitionID, gameID, endOfGameDateTime);

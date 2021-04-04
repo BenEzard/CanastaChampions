@@ -7,6 +7,8 @@
     PositionNumber       INTEGER NOT NULL,
     PlayerID             INTEGER REFERENCES Players (PlayerID) 
                                  NOT NULL,
+    TeamID               INTEGER REFERENCES Team (TeamID) 
+                                 NOT NULL,
     DealerFlag           BOOLEAN DEFAULT (0) 
                                  NOT NULL
 );

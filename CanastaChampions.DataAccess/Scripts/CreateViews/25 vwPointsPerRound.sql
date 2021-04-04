@@ -47,6 +47,16 @@ Points_CTE AS (
         FinishingBonus * 100 AS FinishingPoints
     FROM
         Totals_CTE
+),
+
+Finisher_CTE AS (
+    SELECT
+        GameRoundID,
+        TeamID
+    FROM
+        Totals_CTE
+    WHERE
+        FinishingBonus > 0
 )
 
 SELECT
@@ -64,7 +74,7 @@ SELECT
     PointsOnHand,
     FinishingPoints,
     CuttingBonusPoints + PenaltyPoints + NaturalCanastaPoints + UnnaturalCanastaPoints + RedThreePoints + PointsOnHand + FinishingPoints AS TotalPoints,
-    WinningTeam.TeamName AS WinningTeam,
+    FinisherTeam.TeamName AS WinningTeam,
     Players.PlayerName AS DealerName
 FROM
     Points_CTE
@@ -74,5 +84,9 @@ LEFT JOIN vwTeam WinningTeam
     ON Points_CTE.TeamID = WinningTeam.TeamID   
 LEFT JOIN GameRound
     ON Points_CTE.GameRoundID = GameRound.GameRoundID
+LEFT JOIN Finisher_CTE
+    ON Points_CTE.GameRoundID = Finisher_CTE.GameRoundID
+LEFT JOIN vwTeam FinisherTeam
+    ON FinisherTeam.TeamID = Finisher_CTE.TeamID
 LEFT JOIN Players
     ON GameRound.DealerID = Players.PlayerID

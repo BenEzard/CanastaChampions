@@ -12,6 +12,5 @@ namespace CanastaChampions.DataAccess.Models
         public int Team2Score { get; set; }
         public int Team3Score { get; set; }
         public string WinningTeamName { get; set; }
-        public string DealerName { get; set; }
     }
 }
