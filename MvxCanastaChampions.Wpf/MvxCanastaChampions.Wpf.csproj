@@ -9,6 +9,7 @@
   <ItemGroup>
     <None Remove="Images\arrow-left.png" />
     <None Remove="Images\arrow-right.png" />
+    <None Remove="Images\CanastaChampions.png" />
     <None Remove="Images\finish_flag.png" />
     <None Remove="Images\natural_canasta.png" />
     <None Remove="Images\pack_of_cards.png" />
@@ -27,6 +28,7 @@
   <ItemGroup>
     <Resource Include="Images\arrow-left.png" />
     <Resource Include="Images\arrow-right.png" />
+    <Resource Include="Images\CanastaChampions.png" />
     <Resource Include="Images\finish_flag.png" />
     <Resource Include="Images\natural_canasta.png" />
     <Resource Include="Images\pack_of_cards.png" />

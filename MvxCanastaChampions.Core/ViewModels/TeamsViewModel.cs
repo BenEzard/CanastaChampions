@@ -19,7 +19,6 @@ namespace MvxCanastaChampions.Core.ViewModels
 
         private MvxObservableCollection<GamePlayerModel> _teamFormationList = new MvxObservableCollection<GamePlayerModel>();
 
-
         public MvxObservableCollection<GamePlayerModel> TeamFormationList
         {
             get => _teamFormationList;

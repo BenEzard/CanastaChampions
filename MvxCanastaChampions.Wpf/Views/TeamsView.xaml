@@ -13,6 +13,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -79,9 +80,9 @@
             </Button>
         </StackPanel>
 
-        
+        <Image Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" Source="/Images/CanastaChampions.png" Width="190" />
 
-        
-     
+
+
     </Grid>
 </views:MvxWpfView>
