@@ -5,6 +5,7 @@ using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using MvxCanastaChampions.Core.Services;
+using System.Windows.Media;
 
 namespace MvxCanastaChampions.Core.ViewModels
 {
@@ -80,6 +81,8 @@ namespace MvxCanastaChampions.Core.ViewModels
             PlayCompetitionCommand = new MvxCommand(PlayCompetition);
             ResetDatabaseCommand = new MvxCommand(ResetDatabase);
             _navigationService = navigationService;
+
+            MediaPlayer mp = new MediaPlayer();
         }
 
         public void ResetDatabase()
