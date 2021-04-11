@@ -341,17 +341,6 @@ namespace MvxCanastaChampions.Core.ViewModels
         }
         #endregion
 
-        #region TotalScores
-        public int Team1TotalScore
-            => _team1ScoreBeforeRound + Team1RoundScore;
-
-        public int Team2TotalScore
-            => _team2ScoreBeforeRound + Team2RoundScore;
-
-        public int Team3TotalScore
-            => _team3ScoreBeforeRound + Team3RoundScore;
-        #endregion
-
         #region PenaltyCount
         private int _team1PenaltyCount = 0;
 
@@ -619,17 +608,14 @@ namespace MvxCanastaChampions.Core.ViewModels
                     totalScore += 800;
                 else
                     totalScore += red3Count * 100;
-
-            totalScore += pointsOnHand;
             }
             else {  // hasCanasta == false
                 if (red3Count == 4)
                     totalScore -= 800;
                 else
                     totalScore -= red3Count * 100;
-
-                totalScore -= pointsOnHand;
             }
+            totalScore += pointsOnHand;
 
             if (finishingBonus && hasCanasta)
                 totalScore += 100;

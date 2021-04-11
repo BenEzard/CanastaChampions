@@ -34,9 +34,6 @@
 
             <!-- Round Total -->
             <ColumnDefinition Width="*" />
-
-            <!-- Grand Total -->
-            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -54,8 +51,11 @@
         <!-- Row 1: Headers -->
         <TextBlock FontSize="20" Grid.Column="0" Grid.Row="1" Width="100" VerticalAlignment="Center">Teams</TextBlock>
 
-        <TextBlock Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">Penalty Count</TextBlock>
-        
+        <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" >
+            <Image Source="/Images/penalty.png" Width="36" />
+            <TextBlock TextWrapping="Wrap">Penalty Count</TextBlock>
+        </StackPanel>
+
         <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" >
             <Image Source="/Images/natural_canasta.png" Width="100" />
             <TextBlock TextWrapping="Wrap">Natural Canasta Count</TextBlock>
@@ -77,10 +77,6 @@
 
         <StackPanel Orientation="Vertical" Grid.Column="7" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" >
             <TextBlock TextWrapping="Wrap">Round Score</TextBlock>
-        </StackPanel>
-
-        <StackPanel Orientation="Vertical" Grid.Column="8" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" >
-            <TextBlock TextWrapping="Wrap">TOTAL</TextBlock>
         </StackPanel>
 
         <!-- Team Names -->
@@ -137,14 +133,6 @@
         <TextBlock Grid.Column="7" Grid.Row="3" Text="{Binding Team2RoundScore}"
                    FontSize="20" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <TextBlock Grid.Column="7" Grid.Row="4" Text="{Binding Team3RoundScore}"
-                   FontSize="20" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
-        <!-- Game Total -->
-        <TextBlock Grid.Column="8" Grid.Row="2" Text="{Binding Team1TotalScore}"
-                   FontSize="20" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <TextBlock Grid.Column="8" Grid.Row="3" Text="{Binding Team2TotalScore}"
-                   FontSize="20" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <TextBlock Grid.Column="8" Grid.Row="4" Text="{Binding Team3TotalScore}"
                    FontSize="20" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
         <!-- Button -->

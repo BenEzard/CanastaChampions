@@ -82,7 +82,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             ResetDatabaseCommand = new MvxCommand(ResetDatabase);
             _navigationService = navigationService;
 
-            MediaPlayer mp = new MediaPlayer();
+            //MediaPlayer mp = new MediaPlayer();
         }
 
         public void ResetDatabase()

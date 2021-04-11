@@ -253,8 +253,17 @@ namespace MvxCanastaChampions.Core.Services
             GameDataAccess.UpdateDealer(gameRound.CompetitionID, gameRound.GameID);
         }
 
+        /// <summary>
+        /// Finalise a Game.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        /// <param name="endOfGameDateTime"></param>
         public static void FinaliseGame(long competitionID, long gameID, DateTime endOfGameDateTime)
-            => GameDataAccess.UpdateGameInformation(competitionID, gameID, endOfGameDateTime);
+        {
+            GameDataAccess.UpdateGameInformation(competitionID, gameID, endOfGameDateTime);
+            GameDataAccess.ClearDealerInfo(competitionID, gameID);
+        }
 
         public static List<GamePlayerModel> GetCurrentPlayers(long competitionID, long gameID)
             => GameDataAccess.GetPlayers(competitionID, gameID);

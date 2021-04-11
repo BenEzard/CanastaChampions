@@ -433,8 +433,8 @@ namespace CanastaChampions.DataAccess.Services
                 command.Parameters.AddWithValue("@competitionID", competitionID);
                 command.Parameters.AddWithValue("@gameID", gameID);
                 command.ExecuteNonQuery();
-                }
-                _conn.Dispose();
+            }
+            _conn.Dispose();
         }
 
         /// <summary>
@@ -1015,6 +1015,30 @@ namespace CanastaChampions.DataAccess.Services
                 command.ExecuteNonQuery();
             }
 
+            _conn.Dispose();
+        }
+
+        /// <summary>
+        /// Remove the active Dealer flag from a completed game.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        public static void ClearDealerInfo(long competitionID, long gameID)
+        {
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = "UPDATE GamePlayerPositions" +
+                    " SET DealerFlag = 0" +
+                        " WHERE CompetitionID = @competitionID" +
+                        " AND GameID = @gameID" +
+                        " AND DealerFlag = 1";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.ExecuteNonQuery();
+            }
             _conn.Dispose();
         }
     }
