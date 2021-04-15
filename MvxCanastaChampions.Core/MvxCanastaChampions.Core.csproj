@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,12 +10,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CanastaChampions.DataAccess\CanastaChampions.DataAccess.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="PresentationCore">
-      <HintPath>C:\Program Files (x86)\dotnet\shared\Microsoft.WindowsDesktop.App\5.0.4\PresentationCore.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
-﻿using MvvmCross.Platforms.Wpf.Views;
+﻿using System.Windows.Media;
+using MvvmCross.Platforms.Wpf.Views;
 
 namespace MvxCanastaChampions.Wpf.Views
 {
@@ -7,9 +8,13 @@ namespace MvxCanastaChampions.Wpf.Views
     /// </summary>
     public partial class CompetitionView : MvxWpfView
     {
+        MediaPlayer _mediaPlayer;
+
         public CompetitionView()
         {
             InitializeComponent();
+
+            _mediaPlayer = new MediaPlayer();
         }
     }
 }
