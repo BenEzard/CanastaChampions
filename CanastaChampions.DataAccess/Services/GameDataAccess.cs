@@ -1041,5 +1041,79 @@ namespace CanastaChampions.DataAccess.Services
             }
             _conn.Dispose();
         }
+
+        /// <summary>
+        /// Delete records from the GamePlayerPositions table for a specific Game.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        public static void DeleteGame(long competitionID, long gameID)
+        {
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                // GameRoundScoreDetails
+                command.CommandText = "DELETE FROM GameRoundScoreDetails" +
+                    " WHERE CompetitionID = @competitionID" +
+                    " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.ExecuteNonQuery();
+
+                // GamePlayerPositions
+                command.CommandText = "DELETE FROM GamePlayerPositions" +
+                        " WHERE CompetitionID = @competitionID" +
+                        " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.ExecuteNonQuery();
+
+                // GameRound
+                command.CommandText = "DELETE FROM GameRound" +
+                    " WHERE CompetitionID = @competitionID" +
+                    " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.ExecuteNonQuery();
+
+                // GameTeams
+                command.CommandText = "DELETE FROM GameTeams" +
+                    " WHERE CompetitionID = @competitionID" +
+                    " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.ExecuteNonQuery();
+
+                // GameTeams
+                command.CommandText = "DELETE FROM Game" +
+                    " WHERE CompetitionID = @competitionID" +
+                    " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.ExecuteNonQuery();
+            }
+            _conn.Dispose();
+        }
+
+        /// <summary>
+        /// Delete records from the GameRound table for a specific Game.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        public static void DeleteGameRound(long competitionID, long gameID)
+        {
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+
+            }
+            _conn.Dispose();
+        }
+
+
     }
 }

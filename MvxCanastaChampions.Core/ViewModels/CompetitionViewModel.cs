@@ -5,7 +5,6 @@ using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using MvxCanastaChampions.Core.Services;
-using System.Windows.Media;
 
 namespace MvxCanastaChampions.Core.ViewModels
 {
