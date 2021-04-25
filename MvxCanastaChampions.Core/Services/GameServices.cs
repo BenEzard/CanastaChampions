@@ -280,5 +280,7 @@ namespace MvxCanastaChampions.Core.Services
             // TODO recalculate statistics in CompetitionStatistics
 
         }
+
+        
     }
 }

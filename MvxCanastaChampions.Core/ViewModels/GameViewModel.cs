@@ -21,7 +21,7 @@ namespace MvxCanastaChampions.Core.ViewModels
         public GamePlayerModel Team1Player1
         {
             get { return _team1Member1; }
-            set { 
+            set {
                 _team1Member1 = value;
                 SetProperty(ref _team1Member1, value);
             }
@@ -112,7 +112,7 @@ namespace MvxCanastaChampions.Core.ViewModels
         public int Team1TotalScore
         {
             get { return _team1TotalScore; }
-            set { 
+            set {
                 _team1TotalScore = value;
                 SetProperty(ref _team1TotalScore, value);
                 RaisePropertyChanged(() => Team1Target);
@@ -151,27 +151,27 @@ namespace MvxCanastaChampions.Core.ViewModels
         { get
             {
                 int target = 50;
-                
+
                 if (Team1TotalScore >= 3000)
                     target = 120;
                 else if (Team1TotalScore >= 1500)
                     target = 90;
 
-                return target; 
+                return target;
             }
-        }        
-        
+        }
+
         public int Team2Target
         { get
             {
                 int target = 50;
-                
+
                 if (Team2TotalScore >= 3000)
                     target = 120;
                 else if (Team2TotalScore >= 1500)
                     target = 90;
 
-                return target; 
+                return target;
             }
         }
 
@@ -383,42 +383,54 @@ namespace MvxCanastaChampions.Core.ViewModels
 
         public void Team1Player1Penalty()
         {
+            Team1Player1.PenaltyCount += 1;
             GameServices.AddPlayerPenalty(Team1Player1, _round.GameRoundID);
+            RaisePropertyChanged(() => Team1Player1);
         }
 
         public IMvxCommand Team1Player2PenaltyCommand { get; set; }
 
         public void Team1Player2Penalty()
         {
+            Team1Player2.PenaltyCount += 1;
             GameServices.AddPlayerPenalty(Team1Player2, _round.GameRoundID);
+            RaisePropertyChanged(() => Team1Player2);
         }
 
         public IMvxCommand Team2Player1PenaltyCommand { get; set; }
 
         public void Team2Player1Penalty()
         {
+            Team2Player1.PenaltyCount += 1;
             GameServices.AddPlayerPenalty(Team2Player1, _round.GameRoundID);
+            RaisePropertyChanged(() => Team2Player1);
         }
 
         public IMvxCommand Team2Player2PenaltyCommand { get; set; }
 
         public void Team2Player2Penalty()
         {
+            Team2Player2.PenaltyCount += 1;
             GameServices.AddPlayerPenalty(Team2Player2, _round.GameRoundID);
+            RaisePropertyChanged(() => Team2Player2);
         }
 
         public IMvxCommand Team3Player1PenaltyCommand { get; set; }
 
         public void Team3Player1Penalty()
         {
+            Team3Player1.PenaltyCount += 1;
             GameServices.AddPlayerPenalty(Team3Player1, _round.GameRoundID);
+            RaisePropertyChanged(() => Team3Player1);
         }
 
         public IMvxCommand Team3Player2PenaltyCommand { get; set; }
 
         public void Team3Player2Penalty()
         {
+            Team3Player2.PenaltyCount += 1;
             GameServices.AddPlayerPenalty(Team3Player2, _round.GameRoundID);
+            RaisePropertyChanged(() => Team3Player2);
         }
 
         public bool IsEndRoundButtonAvailable

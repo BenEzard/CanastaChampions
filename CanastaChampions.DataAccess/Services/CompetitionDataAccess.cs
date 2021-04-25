@@ -20,36 +20,44 @@ namespace MvxCanastaChampions.Core.Services
             _conn = new SQLiteConnection(CONNECTION_STRING);
             _conn.Open();
 
-            using (SQLiteCommand command = _conn.CreateCommand())
+            try
             {
-                string baseSQL = "SELECT CompetitionID, CompetitionName, FixedTeams, RandomiseTeams, LogicallyDeleted" +
-                    " FROM Competitions";
 
-                if (excludeDeleted)
+                using (SQLiteCommand command = _conn.CreateCommand())
                 {
-                    baseSQL += " WHERE LogicallyDeleted = @logicallyDeleted";
-                    command.CommandText = baseSQL;
-                    command.Parameters.AddWithValue("@logicallyDeleted", true);
-                }
-                else
-                {
-                    command.CommandText = baseSQL;
+                    string baseSQL = "SELECT CompetitionID, CompetitionName, FixedTeams, RandomiseTeams, LogicallyDeleted" +
+                        " FROM Competitions";
+
+                    if (excludeDeleted)
+                    {
+                        baseSQL += " WHERE LogicallyDeleted = @logicallyDeleted";
+                        command.CommandText = baseSQL;
+                        command.Parameters.AddWithValue("@logicallyDeleted", true);
+                    }
+                    else
+                    {
+                        command.CommandText = baseSQL;
+                    }
+
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        CompetitionModel c = new CompetitionModel();
+                        c.CompetitionID = reader.GetInt64(0);
+                        c.CompetitionName = reader.GetString(1);
+                        c.TeamsAreFixed = reader.GetBoolean(2);
+                        c.TeamsAreRandomised = reader.GetBoolean(3);
+                        c.LogicallyDeleted = reader.GetBoolean(4);
+                        rValue.Add(c);
+                    }
                 }
 
-                SQLiteDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    CompetitionModel c = new CompetitionModel();
-                    c.CompetitionID = reader.GetInt64(0);
-                    c.CompetitionName = reader.GetString(1);
-                    c.TeamsAreFixed = reader.GetBoolean(2);
-                    c.TeamsAreRandomised = reader.GetBoolean(3);
-                    c.LogicallyDeleted = reader.GetBoolean(4);
-                    rValue.Add(c);
-                }
+                _conn.Dispose();
             }
-
-            _conn.Dispose();
+            catch (SQLiteException e)
+            {
+                _conn.Dispose();
+            }
 
             return rValue;
         }
