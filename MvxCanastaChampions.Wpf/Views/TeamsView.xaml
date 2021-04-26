@@ -80,7 +80,7 @@
             </Button>
         </StackPanel>
 
-        <Image Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" Source="/Images/CanastaChampions.png" Width="190" />
+        <Image Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" Source="{Binding SelectedCompetition.CompetitionImage}" Width="190" />
 
 
 

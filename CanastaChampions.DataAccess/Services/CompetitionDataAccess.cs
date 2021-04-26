@@ -25,7 +25,7 @@ namespace MvxCanastaChampions.Core.Services
 
                 using (SQLiteCommand command = _conn.CreateCommand())
                 {
-                    string baseSQL = "SELECT CompetitionID, CompetitionName, FixedTeams, RandomiseTeams, LogicallyDeleted" +
+                    string baseSQL = "SELECT CompetitionID, CompetitionName, CompetitionImage, FixedTeams, RandomiseTeams, LogicallyDeleted" +
                         " FROM Competitions";
 
                     if (excludeDeleted)
@@ -45,9 +45,10 @@ namespace MvxCanastaChampions.Core.Services
                         CompetitionModel c = new CompetitionModel();
                         c.CompetitionID = reader.GetInt64(0);
                         c.CompetitionName = reader.GetString(1);
-                        c.TeamsAreFixed = reader.GetBoolean(2);
-                        c.TeamsAreRandomised = reader.GetBoolean(3);
-                        c.LogicallyDeleted = reader.GetBoolean(4);
+                        c.CompetitionImage = reader.GetString(2);
+                        c.TeamsAreFixed = reader.GetBoolean(3);
+                        c.TeamsAreRandomised = reader.GetBoolean(4);
+                        c.LogicallyDeleted = reader.GetBoolean(5);
                         rValue.Add(c);
                     }
                 }
@@ -246,7 +247,7 @@ namespace MvxCanastaChampions.Core.Services
 
             using (SQLiteCommand command = _conn.CreateCommand())
             {
-                command.CommandText = "SELECT CompetitionID, CompetitionName, FixedTeams, RandomiseTeams, LogicallyDeleted" +
+                command.CommandText = "SELECT CompetitionID, CompetitionName, CompetitionImage, FixedTeams, RandomiseTeams, LogicallyDeleted" +
                     " FROM Competitions" +
                     " WHERE CompetitionName = @competitionName";
                 command.Parameters.AddWithValue("@competitionName", competitionName);
@@ -256,9 +257,10 @@ namespace MvxCanastaChampions.Core.Services
                     rValue = new CompetitionModel();
                     rValue.CompetitionID = reader.GetInt64(0);
                     rValue.CompetitionName = reader.GetString(1);
-                    rValue.TeamsAreFixed = reader.GetBoolean(2);
-                    rValue.TeamsAreRandomised = reader.GetBoolean(3);
-                    rValue.LogicallyDeleted = reader.GetBoolean(4);
+                    rValue.CompetitionImage = reader.GetString(2);
+                    rValue.TeamsAreFixed = reader.GetBoolean(3);
+                    rValue.TeamsAreRandomised = reader.GetBoolean(4);
+                    rValue.LogicallyDeleted = reader.GetBoolean(5);
                 }
             }
 
@@ -391,9 +393,10 @@ namespace MvxCanastaChampions.Core.Services
 
             using (SQLiteCommand command = _conn.CreateCommand())
             {
-                command.CommandText = "INSERT INTO Competitions (CompetitionName, FixedTeams, RandomiseTeams)" +
-                        " VALUES (@competitionName, @fixedTeams, @randomiseTeams)";
+                command.CommandText = "INSERT INTO Competitions (CompetitionName, CompetitionImage, FixedTeams, RandomiseTeams)" +
+                        " VALUES (@competitionName, @competitionImage, @fixedTeams, @randomiseTeams)";
                 command.Parameters.AddWithValue("@competitionName", competition.CompetitionName);
+                command.Parameters.AddWithValue("@competitionImage", competition.CompetitionImage);
                 command.Parameters.AddWithValue("@fixedTeams", competition.TeamsAreFixed);
                 command.Parameters.AddWithValue("@randomiseTeams", competition.TeamsAreRandomised);
                 command.ExecuteNonQuery();

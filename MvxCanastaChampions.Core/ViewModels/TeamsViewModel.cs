@@ -15,7 +15,7 @@ namespace MvxCanastaChampions.Core.ViewModels
     {
         private readonly IMvxNavigationService _navigationService;
 
-        public CompetitionModel SelectedCompetition = null;
+        public CompetitionModel SelectedCompetition { get; set; } = null;
 
         private MvxObservableCollection<GamePlayerModel> _teamFormationList = new MvxObservableCollection<GamePlayerModel>();
 

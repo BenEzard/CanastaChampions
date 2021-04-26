@@ -16,6 +16,7 @@
     <None Remove="Images\CanastaChampions.png" />
     <None Remove="Images\finish_flag.png" />
     <None Remove="Images\natural_canasta.png" />
+    <None Remove="Images\no_image.jpg" />
     <None Remove="Images\pack_of_cards.png" />
     <None Remove="Images\red-three.png" />
     <None Remove="Images\unnatural_canasta.png" />
@@ -35,6 +36,7 @@
     <Resource Include="Images\CanastaChampions.png" />
     <Resource Include="Images\finish_flag.png" />
     <Resource Include="Images\natural_canasta.png" />
+    <Resource Include="Images\no_image.jpg" />
     <Resource Include="Images\pack_of_cards.png" />
     <Resource Include="Images\red-three.png" />
     <Resource Include="Images\unnatural_canasta.png" />
