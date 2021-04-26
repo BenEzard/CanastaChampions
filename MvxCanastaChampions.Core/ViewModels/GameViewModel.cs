@@ -265,6 +265,12 @@ namespace MvxCanastaChampions.Core.ViewModels
         /// <param name="parameter"></param>
         private void UnpackPlayerVariable(List<GamePlayerModel> parameter)
         {
+            System.Diagnostics.Debug.WriteLine($"GameViewModel.UnpackPlayerVariable()");
+            foreach(GamePlayerModel gmp in parameter)
+            {
+                System.Diagnostics.Debug.WriteLine($"   Player: {gmp.PlayerName} (TeamNumber = {gmp.TeamNumber})");
+            }
+
             if (parameter.Count == 1)
             {
                 _competitionID = parameter.ElementAt(0).CompetitionID;
@@ -345,6 +351,7 @@ namespace MvxCanastaChampions.Core.ViewModels
             GameServices.StartRound(GameRound);
             RaisePropertyChanged(() => IsStartRoundButtonAvailable);
             RaisePropertyChanged(() => IsEndRoundButtonAvailable);
+            RaisePropertyChanged(() => IsEndRoundButtonAndTeam3Available);
         }
         #endregion
 
@@ -439,8 +446,8 @@ namespace MvxCanastaChampions.Core.ViewModels
         public bool IsStartRoundButtonAvailable
             => GameRound.GameRoundID == -1 && FinalScoreNotReached == false ? true : false;
 
-        public bool IsStartRoundButtonAndTeam3Available
-            => GameRound.GameRoundID == -1  && IsTeam3Utilised ? true : false;
+        public bool IsEndRoundButtonAndTeam3Available
+            => GameRound.GameRoundID == -1  && IsTeam3Utilised ? false : true;
 
         public bool FinalScoreNotReached
             => Team1TotalScore >= 5000 || Team2TotalScore >= 5000 || Team3TotalScore >= 5000 ? true : false;

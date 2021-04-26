@@ -849,6 +849,44 @@ namespace CanastaChampions.DataAccess.Services
             _conn.Dispose();
         }
 
+        /// <summary>
+        /// Forceably close any open Games from this Competition.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        public static void ForceEndAnyOpenGames(long competitionID)
+        {
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            string sql = "UPDATE GameRound" +
+                " SET EndOfRoundDateTime = @endOfRound" +
+                " WHERE CompetitionID = @competitionID" +
+                " AND EndOfRoundDateTime IS NULL";
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@endOfRound", DateTime.Now);
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.ExecuteNonQuery();
+            }
+
+            sql = "UPDATE Game" +
+                " SET GameEndDateTime = @endOfGame" +
+                " WHERE CompetitionID = @competitionID" +
+                " AND GameEndDateTime IS NULL";
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@endOfGame", DateTime.Now);
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.ExecuteNonQuery();
+            }
+
+            _conn.Dispose();
+        }
+
         public static void UpdateGameInformation(long competitionID, long gameID, DateTime endOfGameDateTime)
         {
             _conn = new SQLiteConnection(CONNECTION_STRING);

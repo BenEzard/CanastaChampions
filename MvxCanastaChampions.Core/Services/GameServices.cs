@@ -254,6 +254,13 @@ namespace MvxCanastaChampions.Core.Services
         }
 
         /// <summary>
+        /// Forceably close any open Games in the Competition.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        public static void ForceablyCloseAnyOpenGames(long competitionID)
+            => GameDataAccess.ForceEndAnyOpenGames(competitionID);
+
+        /// <summary>
         /// Finalise a Game.
         /// </summary>
         /// <param name="competitionID"></param>

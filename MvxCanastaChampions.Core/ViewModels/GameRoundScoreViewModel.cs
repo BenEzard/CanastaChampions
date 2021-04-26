@@ -541,7 +541,11 @@ namespace MvxCanastaChampions.Core.ViewModels
             Team2 = teams[1];
 
             if (teams.Count > 2)
+            {
                 Team3 = teams[2];
+                IsTeam3Playing = true;
+                //RaisePropertyChanged(() => IsTeam3Playing);
+            }
 
             // Load Penalties
             Team1PenaltyCount = GameServices.GetTeamPenaltyCount(GameRound.CompetitionID, GameRound.GameID, GameRound.GameRoundID, Team1.TeamID);

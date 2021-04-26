@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>playing-card2.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -13,6 +14,10 @@
   <ItemGroup>
     <None Remove="Images\arrow-left.png" />
     <None Remove="Images\arrow-right.png" />
+    <None Remove="Images\bullet_arrow_bottom.png" />
+    <None Remove="Images\bullet_arrow_down.png" />
+    <None Remove="Images\bullet_arrow_top.png" />
+    <None Remove="Images\bullet_arrow_up.png" />
     <None Remove="Images\CanastaChampions.png" />
     <None Remove="Images\finish_flag.png" />
     <None Remove="Images\natural_canasta.png" />
@@ -33,6 +38,10 @@
   <ItemGroup>
     <Resource Include="Images\arrow-left.png" />
     <Resource Include="Images\arrow-right.png" />
+    <Resource Include="Images\bullet_arrow_bottom.png" />
+    <Resource Include="Images\bullet_arrow_down.png" />
+    <Resource Include="Images\bullet_arrow_top.png" />
+    <Resource Include="Images\bullet_arrow_up.png" />
     <Resource Include="Images\CanastaChampions.png" />
     <Resource Include="Images\finish_flag.png" />
     <Resource Include="Images\natural_canasta.png" />
