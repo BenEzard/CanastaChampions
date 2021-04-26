@@ -13,7 +13,7 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Button Background="LimeGreen">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="/MvxCanastaChampions.Wpf;component/Images/arrow-left.png" Width="22"></Image>
+                    <Image Source="/MvxCanastaChampions.Wpf;component/Images/arrow_left.png" Width="22"></Image>
                     <TextBlock Text="Back" Margin="5,0,5,0" VerticalAlignment="Center" Padding="5" />
                 </StackPanel>
             </Button>

@@ -40,10 +40,7 @@ Points_CTE AS (
             WHEN (NaturalCanastaCount + UnnaturalCanastaCount) > 0 AND RedThreeCount < 4 THEN RedThreeCount * 100
             WHEN (NaturalCanastaCount + UnnaturalCanastaCount) > 0 AND RedThreeCount = 4 THEN RedThreeCount * 200
         END AS RedThreePoints,
-        CASE
-            WHEN (NaturalCanastaCount + UnnaturalCanastaCount) = 0 THEN PointsOnHand * -1
-            WHEN (NaturalCanastaCount + UnnaturalCanastaCount) > 0 THEN PointsOnHand
-        END AS PointsOnHand,
+        PointsOnHand,
         FinishingBonus * 100 AS FinishingPoints
     FROM
         Totals_CTE
