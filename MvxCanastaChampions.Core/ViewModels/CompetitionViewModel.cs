@@ -5,6 +5,7 @@ using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using MvxCanastaChampions.Core.Services;
+using System;
 
 namespace MvxCanastaChampions.Core.ViewModels
 {
@@ -24,7 +25,6 @@ namespace MvxCanastaChampions.Core.ViewModels
                 SetProperty(ref _competitions, value);
             }
         }
-
 
         public CompetitionModel SelectedCompetition
         {
@@ -72,6 +72,28 @@ namespace MvxCanastaChampions.Core.ViewModels
                 SetProperty(ref _fixedTeams, value);
             }
         }
+
+        /// <summary>
+        /// This delegate defines the signature required by any event handlers
+        /// </summary>
+        /// <param name="sender">A common parameter, but totally optional</param>
+        /// <param name="e">The default EventArgs class is just the beginning - extend this in a derived class if you want something more 
+        /// specific to pass to the event handler</param>
+        public delegate void CompetitionStartedEventHandler(object sender, EventArgs e);
+
+        /// <summary>
+        /// By declaring the event as the type of the delegate, it ties the event handler to the event
+        /// See https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/event for more info
+        /// </summary>
+        public event CompetitionStartedEventHandler CompetitionStarted;
+
+        /// <summary>
+        /// It is common to have a private method (or it could be public if needed from outside of this class) named "On[EventName]" 
+        /// that encapsulates the invocation of the event handler delegate incorporating a null check, definition of the sender object 
+        /// (if any) and the creation of the EventArgs object. Some of this could be parameterised, dependning on what properties you want 
+        /// passed to the event handler via the EventArgs.
+        /// </summary>
+        private void OnCompetitionStarted() => CompetitionStarted?.Invoke(this, new EventArgs());
 
         public CompetitionViewModel(IMvxNavigationService navigationService)
         {
@@ -131,6 +153,8 @@ namespace MvxCanastaChampions.Core.ViewModels
 
         public void PlayCompetition()
         {
+            // Let's now raise the event...
+            OnCompetitionStarted();
             _navigationService.Navigate<TeamsViewModel, CompetitionModel>(SelectedCompetition);
         }
 
