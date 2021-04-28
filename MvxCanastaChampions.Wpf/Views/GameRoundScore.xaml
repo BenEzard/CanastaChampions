@@ -65,7 +65,7 @@
             <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">Unnatural Canasta Count</TextBlock>
         </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Column="4" Grid.Row="1" HorizontalAlignment="Center" >
-            <Image Source="/Images/red-three.png" Width="80" />
+            <Image Source="/Images/red_three.png" Width="80" />
             <TextBlock TextWrapping="Wrap">Red 3 Count</TextBlock>
         </StackPanel>
         <TextBlock Grid.Column="5" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">Points On Hand</TextBlock>
@@ -139,7 +139,7 @@
         <StackPanel Grid.Column="0" Grid.ColumnSpan="8" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
             <CheckBox Content="Cutting Bonus" IsChecked="{Binding CuttingBonus}"
                       VerticalAlignment="Center"/>
-            <Button Padding="5" Margin="50 0 0 0" mvx:Bi.nd="Command ScoringCompletedCommand">Scoring Completed</Button>
+            <Button Padding="5" Margin="50 0 0 0" mvx:Bi.nd="Command ScoringCompletedCommand" Background="LimeGreen">Scoring Completed</Button>
         </StackPanel>
     </Grid>
 </views:MvxWpfView>

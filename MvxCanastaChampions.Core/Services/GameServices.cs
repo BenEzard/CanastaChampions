@@ -254,6 +254,13 @@ namespace MvxCanastaChampions.Core.Services
         }
 
         /// <summary>
+        /// Forceably close any open Games in the Competition.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        public static void ForceablyCloseAnyOpenGames(long competitionID)
+            => GameDataAccess.ForceEndAnyOpenGames(competitionID);
+
+        /// <summary>
         /// Finalise a Game.
         /// </summary>
         /// <param name="competitionID"></param>
@@ -267,5 +274,20 @@ namespace MvxCanastaChampions.Core.Services
 
         public static List<GamePlayerModel> GetCurrentPlayers(long competitionID, long gameID)
             => GameDataAccess.GetPlayers(competitionID, gameID);
+
+        /// <summary>
+        /// Delete all records associated with a specified Game.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        public static void DeleteGame(long competitionID, long gameID)
+        {
+            GameDataAccess.DeleteGame(competitionID, gameID);
+
+            // TODO recalculate statistics in CompetitionStatistics
+
+        }
+
+        
     }
 }

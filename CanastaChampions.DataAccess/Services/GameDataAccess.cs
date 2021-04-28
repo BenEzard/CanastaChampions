@@ -185,8 +185,10 @@ namespace CanastaChampions.DataAccess.Services
                         RoundResultModel roundResult = new RoundResultModel();
                         roundResult.GameRoundID = reader.GetInt64(0);
                         roundResult.RoundNumber = reader.GetInt32(1);
-                        roundResult.Team1Score = reader.GetInt32(2);
-                        roundResult.Team2Score = reader.GetInt32(3);
+                        if (reader.IsDBNull(2) == false)
+                            roundResult.Team1Score = reader.GetInt32(2);
+                        if (reader.IsDBNull(3) == false)
+                            roundResult.Team2Score = reader.GetInt32(3);
                         if (reader.IsDBNull(4) == false)
                             roundResult.Team3Score = reader.GetInt32(4);
                         if (reader.IsDBNull(5) == false)
@@ -522,9 +524,12 @@ namespace CanastaChampions.DataAccess.Services
             using (SQLiteCommand command = _conn.CreateCommand())
             {
                 command.CommandText = "SELECT GameTeamID," +
-                    " Team1ID, Team1Player1ID, Team1Player1Name, Team1Player2ID, Team1Player2Name, " +
-                    " Team2ID, Team2Player1ID, Team2Player1Name, Team2Player2ID, Team2Player2Name, " +
-                    " Team3ID, Team3Player1ID, Team3Player1Name, Team3Player2ID, Team3Player2Name " +
+                    " Team1ID, Team1Player1ID, Team1Player1Name, Team1Player1PenaltyCount," +
+                    " Team1Player2ID, Team1Player2Name, Team1Player2PenaltyCount," +
+                    " Team2ID, Team2Player1ID, Team2Player1Name, Team2Player1PenaltyCount," +
+                    " Team2Player2ID, Team2Player2Name, Team2Player2PenaltyCount," +
+                    " Team3ID, Team3Player1ID, Team3Player1Name, Team3Player1PenaltyCount," +
+                    " Team3Player2ID, Team3Player2Name, Team3Player2PenaltyCount" +
                     " FROM vwGameTeam" +
                     " WHERE CompetitionID = @competitionID" +
                     " AND GameID = @gameID";
@@ -545,6 +550,7 @@ namespace CanastaChampions.DataAccess.Services
                             TeamID = teamID,
                             PlayerID = reader.GetInt64(2),
                             PlayerName = reader.GetString(3),
+                            PenaltyCount = reader.GetInt32(4),
                             TeamNumber = 1
                         };
                         rValue.Add(gpm);
@@ -554,26 +560,16 @@ namespace CanastaChampions.DataAccess.Services
                             CompetitionID = competitionID,
                             GameID = gameID,
                             TeamID = teamID,
-                            PlayerID = reader.GetInt64(4),
-                            PlayerName = reader.GetString(5),
+                            PlayerID = reader.GetInt64(5),
+                            PlayerName = reader.GetString(6),
+                            PenaltyCount = reader.GetInt32(7),
                             TeamNumber = 1
                         };
                         rValue.Add(gpm);
 
                         // Team 2
-                        teamID = reader.GetInt64(6);
+                        teamID = reader.GetInt64(8);
                         // Player 1
-                        gpm = new GamePlayerModel
-                        {
-                            CompetitionID = competitionID,
-                            GameID = gameID,
-                            TeamID = teamID,
-                            PlayerID = reader.GetInt64(7),
-                            PlayerName = reader.GetString(8),
-                            TeamNumber = 2
-                        };
-                        rValue.Add(gpm);
-                        // Player 2
                         gpm = new GamePlayerModel
                         {
                             CompetitionID = competitionID,
@@ -581,22 +577,36 @@ namespace CanastaChampions.DataAccess.Services
                             TeamID = teamID,
                             PlayerID = reader.GetInt64(9),
                             PlayerName = reader.GetString(10),
+                            PenaltyCount = reader.GetInt32(11),
+                            TeamNumber = 2
+                        };
+                        rValue.Add(gpm);
+                        // Player 2
+                        gpm = new GamePlayerModel
+                        {
+                            CompetitionID = competitionID,
+                            GameID = gameID,
+                            TeamID = teamID,
+                            PlayerID = reader.GetInt64(12),
+                            PlayerName = reader.GetString(13),
+                            PenaltyCount = reader.GetInt32(14),
                             TeamNumber = 2
                         };
                         rValue.Add(gpm);
 
-                        if (reader.IsDBNull(11) == false)
+                        if (reader.IsDBNull(15) == false)
                         {
                             // Team 3
-                            teamID = reader.GetInt64(11);
+                            teamID = reader.GetInt64(15);
                             // Player 1
                             gpm = new GamePlayerModel
                             {
                                 CompetitionID = competitionID,
                                 GameID = gameID,
                                 TeamID = teamID,
-                                PlayerID = reader.GetInt64(12),
-                                PlayerName = reader.GetString(13),
+                                PlayerID = reader.GetInt64(16),
+                                PlayerName = reader.GetString(17),
+                                PenaltyCount = reader.GetInt32(18),
                                 TeamNumber = 3
                             };
                             rValue.Add(gpm);
@@ -606,8 +616,9 @@ namespace CanastaChampions.DataAccess.Services
                                 CompetitionID = competitionID,
                                 GameID = gameID,
                                 TeamID = teamID,
-                                PlayerID = reader.GetInt64(16),
-                                PlayerName = reader.GetString(17),
+                                PlayerID = reader.GetInt64(19),
+                                PlayerName = reader.GetString(20),
+                                PenaltyCount = reader.GetInt32(21),
                                 TeamNumber = 3
                             };
                             rValue.Add(gpm);
@@ -838,6 +849,44 @@ namespace CanastaChampions.DataAccess.Services
             _conn.Dispose();
         }
 
+        /// <summary>
+        /// Forceably close any open Games from this Competition.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        public static void ForceEndAnyOpenGames(long competitionID)
+        {
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            string sql = "UPDATE GameRound" +
+                " SET EndOfRoundDateTime = @endOfRound" +
+                " WHERE CompetitionID = @competitionID" +
+                " AND EndOfRoundDateTime IS NULL";
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@endOfRound", DateTime.Now);
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.ExecuteNonQuery();
+            }
+
+            sql = "UPDATE Game" +
+                " SET GameEndDateTime = @endOfGame" +
+                " WHERE CompetitionID = @competitionID" +
+                " AND GameEndDateTime IS NULL";
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@endOfGame", DateTime.Now);
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.ExecuteNonQuery();
+            }
+
+            _conn.Dispose();
+        }
+
         public static void UpdateGameInformation(long competitionID, long gameID, DateTime endOfGameDateTime)
         {
             _conn = new SQLiteConnection(CONNECTION_STRING);
@@ -1041,5 +1090,79 @@ namespace CanastaChampions.DataAccess.Services
             }
             _conn.Dispose();
         }
+
+        /// <summary>
+        /// Delete records from the GamePlayerPositions table for a specific Game.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        public static void DeleteGame(long competitionID, long gameID)
+        {
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+                // GameRoundScoreDetails
+                command.CommandText = "DELETE FROM GameRoundScoreDetails" +
+                    " WHERE CompetitionID = @competitionID" +
+                    " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.ExecuteNonQuery();
+
+                // GamePlayerPositions
+                command.CommandText = "DELETE FROM GamePlayerPositions" +
+                        " WHERE CompetitionID = @competitionID" +
+                        " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.ExecuteNonQuery();
+
+                // GameRound
+                command.CommandText = "DELETE FROM GameRound" +
+                    " WHERE CompetitionID = @competitionID" +
+                    " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.ExecuteNonQuery();
+
+                // GameTeams
+                command.CommandText = "DELETE FROM GameTeams" +
+                    " WHERE CompetitionID = @competitionID" +
+                    " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.ExecuteNonQuery();
+
+                // GameTeams
+                command.CommandText = "DELETE FROM Game" +
+                    " WHERE CompetitionID = @competitionID" +
+                    " AND GameID = @gameID";
+                command.Parameters.AddWithValue("@competitionID", competitionID);
+                command.Parameters.AddWithValue("@gameID", gameID);
+                command.ExecuteNonQuery();
+            }
+            _conn.Dispose();
+        }
+
+        /// <summary>
+        /// Delete records from the GameRound table for a specific Game.
+        /// </summary>
+        /// <param name="competitionID"></param>
+        /// <param name="gameID"></param>
+        public static void DeleteGameRound(long competitionID, long gameID)
+        {
+            _conn = new SQLiteConnection(CONNECTION_STRING);
+            _conn.Open();
+
+            using (SQLiteCommand command = _conn.CreateCommand())
+            {
+
+            }
+            _conn.Dispose();
+        }
+
+
     }
 }

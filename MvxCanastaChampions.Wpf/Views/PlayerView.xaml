@@ -11,9 +11,9 @@
              d:DesignHeight="450" d:DesignWidth="800" Background="White">
     <DockPanel LastChildFill="True" Margin="10">
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <Button>
+            <Button Background="LimeGreen">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="/MvxCanastaChampions.Wpf;component/Images/arrow-left.png" Width="22"></Image>
+                    <Image Source="/MvxCanastaChampions.Wpf;component/Images/arrow_left.png" Width="22"></Image>
                     <TextBlock Text="Back" Margin="5,0,5,0" VerticalAlignment="Center" Padding="5" />
                 </StackPanel>
             </Button>
@@ -51,7 +51,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" >
-            <Button Content="Save" Padding="5" />
+            <Button Content="Save" Padding="5" Background="LimeGreen" />
         </StackPanel>
     </Grid>
     </DockPanel>

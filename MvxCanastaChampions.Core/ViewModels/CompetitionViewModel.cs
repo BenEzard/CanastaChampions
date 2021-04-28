@@ -112,8 +112,8 @@ namespace MvxCanastaChampions.Core.ViewModels
             if (loadData)
             {
                 // Create Competitions
-                var burgerComp = CompetitionServices.GetOrCreateCompetition(new CompetitionModel("Burger Empire", true, false));
-                var daveComp = CompetitionServices.GetOrCreateCompetition(new CompetitionModel("Dave's Canasta Regulars", false, true));
+                var burgerComp = CompetitionServices.GetOrCreateCompetition(new CompetitionModel("Burger Empire", "/Images/canasta_champions.png", true, false));
+                var daveComp = CompetitionServices.GetOrCreateCompetition(new CompetitionModel("Dave's Canasta Regulars", "/Images/no_image.jpg", false, true));
 
                 // Add Players
                 var ben = CompetitionServices.GetOrCreatePlayer(new PlayerModel("Ben"));

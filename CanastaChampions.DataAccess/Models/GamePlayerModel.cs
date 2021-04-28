@@ -16,6 +16,8 @@ namespace CanastaChampions.DataAccess.Models
 
         public string PlayerName { get; set; }
 
+        public int PenaltyCount { get; set; } = 0;
+
         /// <summary>
         /// A team number that is consecutive per game. i.e. Team 1, 2, 3.
         /// </summary>

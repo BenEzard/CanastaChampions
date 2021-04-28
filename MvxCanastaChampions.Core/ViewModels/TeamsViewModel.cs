@@ -3,11 +3,8 @@ using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using MvxCanastaChampions.Core.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MvxCanastaChampions.Core.ViewModels
 {
@@ -15,7 +12,7 @@ namespace MvxCanastaChampions.Core.ViewModels
     {
         private readonly IMvxNavigationService _navigationService;
 
-        public CompetitionModel SelectedCompetition = null;
+        public CompetitionModel SelectedCompetition { get; set; } = null;
 
         private MvxObservableCollection<GamePlayerModel> _teamFormationList = new MvxObservableCollection<GamePlayerModel>();
 
@@ -54,8 +51,11 @@ namespace MvxCanastaChampions.Core.ViewModels
             }
         }
 
+        /// <summary>
+        /// Check to see if there any unfinished games from this competition.
+        /// </summary>
         public bool UnfinishedGameExists
-            => GameServices.CheckForUnfinishedGame(SelectedCompetition.CompetitionID, out _, out _);            
+            => GameServices.CheckForUnfinishedGame(SelectedCompetition.CompetitionID, out _, out _);
 
         #region FormTeamCommand
         public IMvxCommand FormTeamCommand { get; set; }
@@ -133,12 +133,20 @@ namespace MvxCanastaChampions.Core.ViewModels
         }
         #endregion
 
+        /// <summary>
+        /// Determine if a Player is currently selected.
+        /// Returns false if no Player, or more than 1 Player is selected.
+        /// </summary>
         public bool IsPlayerSelected
             => (SelectedTeamMembers.Count() == 1) ? true : false;
 
         #region MoveUpPlayerCommand
         public IMvxCommand MoveUpPlayerCommand { get; set; }
 
+        /// <summary>
+        /// Check to see if a Player can be moved up.
+        /// For this to happen a Player must be selected, and must not be at the top of the list already.
+        /// </summary>
         public bool CanMoveUp
             => IsPlayerSelected && (SelectedIndex > 0) ? true : false;
 
@@ -149,15 +157,37 @@ namespace MvxCanastaChampions.Core.ViewModels
             TeamFormationList.RemoveAt(selectedIndex);
             TeamFormationList.Insert(selectedIndex - 1, tf);
         }
+        #endregion        
+        
+        #region MovePlayerToTopCommand
+        public IMvxCommand MovePlayerToTopCommand { get; set; }
+
+        /// <summary>
+        /// Move a Player to the top of the list of Players.
+        /// </summary>
+        public void MovePlayerToTop()
+        {
+            int selectedIndex = SelectedIndex;
+            GamePlayerModel tf = TeamFormationList[SelectedIndex];
+            TeamFormationList.RemoveAt(selectedIndex);
+            TeamFormationList.Insert(0, tf);
+        }
         #endregion
 
         #region MoveDownPlayer
         public IMvxCommand MoveDownPlayerCommand { get; set; }
 
+        /// <summary>
+        /// Check to see if the Player can be moved down in the list.
+        /// In order for this to happen, a Player must be selected and not already at the bottom of the list.
+        /// </summary>
         public bool CanMoveDown
             => IsPlayerSelected && (SelectedIndex < TeamFormationList.Count - 1) ? true : false;
 
 
+        /// <summary>
+        /// Move a Player down in the list of Players.
+        /// </summary>
         public void MoveDownPlayer()
         {
             int selectedIndex = SelectedIndex;
@@ -167,11 +197,30 @@ namespace MvxCanastaChampions.Core.ViewModels
         }
         #endregion
 
+        #region MovePlayerToBottomCommand
+        public IMvxCommand MovePlayerToBottomCommand { get; set; }
+
+        public void MovePlayerToBottom()
+        {
+            int selectedIndex = SelectedIndex;
+            GamePlayerModel tf = TeamFormationList[SelectedIndex];
+            TeamFormationList.RemoveAt(selectedIndex);
+            TeamFormationList.Insert(TeamFormationList.Count, tf);
+        }
+        #endregion
+
         #region StartGameCommand
         public IMvxCommand StartGameCommand { get; set; }
 
+        /// <summary>
+        /// Start a new Game.
+        /// As a prevention against bugs, this will close any incomplete Games from this Competition.
+        /// </summary>
         public void StartGame()
         {
+            // As a precaution: close of any incomplete Games from this Competition.
+            GameServices.ForceablyCloseAnyOpenGames(SelectedCompetition.CompetitionID);
+
             List<GamePlayerModel> teams = new List<GamePlayerModel>();
             foreach (GamePlayerModel m in TeamFormationList)
             {
@@ -182,6 +231,8 @@ namespace MvxCanastaChampions.Core.ViewModels
             _navigationService.Navigate<GameViewModel, List<GamePlayerModel>>(teams);
         }
         #endregion
+
+
 
         #region LoadGameCommand
         public IMvxCommand LoadGameCommand { get; set; }
@@ -210,6 +261,8 @@ namespace MvxCanastaChampions.Core.ViewModels
             UnBindTeamCommand = new MvxCommand(UnBindTeam);
             MoveUpPlayerCommand = new MvxCommand(MoveUpPlayer);
             MoveDownPlayerCommand = new MvxCommand(MoveDownPlayer);
+            MovePlayerToTopCommand = new MvxCommand(MovePlayerToTop);
+            MovePlayerToBottomCommand = new MvxCommand(MovePlayerToBottom);
             AddPlayerCommand = new MvxCommand(AddPlayer);
             EditPlayerCommand = new MvxCommand(EditPlayer);
             StartGameCommand = new MvxCommand(StartGame);
