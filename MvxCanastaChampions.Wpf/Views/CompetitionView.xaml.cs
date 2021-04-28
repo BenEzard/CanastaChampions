@@ -14,13 +14,17 @@ namespace MvxCanastaChampions.Wpf.Views
         CompetitionViewModel _viewModel;
         MediaPlayer _mediaPlayer;
 
-        public CompetitionView(CompetitionViewModel viewModel)
+        public CompetitionView()
         {
             InitializeComponent();
 
-            _viewModel = viewModel;
+            if (this.ViewModel is CompetitionViewModel viewModel)
+            {
+                _viewModel = viewModel;
+            }
+
             _mediaPlayer = new MediaPlayer();
-            
+
             if (_viewModel != null)
             {
                 // As long as the view model exists, this sets up our local method as the delegate (event handler) for the event
