@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System;
+using System.Windows.Media;
 
 using MvvmCross.Platforms.Wpf.Views;
 
@@ -12,7 +13,7 @@ namespace MvxCanastaChampions.Wpf.Views
     public partial class CompetitionView : MvxWpfView
     {
         CompetitionViewModel _viewModel;
-        //MediaPlayer _mediaPlayer;
+        MediaPlayer _mediaPlayer = new MediaPlayer();
 
         public CompetitionView()
         {
@@ -50,11 +51,13 @@ namespace MvxCanastaChampions.Wpf.Views
         /// </summary>
         private void ViewModel_CompetitionStarted(object sender, System.EventArgs e)
         {
-            //_mediaPlayer.Open(new System.Uri("path_to_some_media_file"));
-            //_mediaPlayer.Play();
+            // TODO fix this
+            Uri uri = new Uri("pack://application:,,,/Audio/baseball-organ.mp3", UriKind.RelativeOrAbsolute);
+            _mediaPlayer.Open(uri);
+            _mediaPlayer.Play();
 
             // Alternatively, play whatever sound is associated with the Asterisk sound event in Windows.
-            System.Media.SystemSounds.Asterisk.Play();
+            //System.Media.SystemSounds.Asterisk.Play();
         }
     }
 }

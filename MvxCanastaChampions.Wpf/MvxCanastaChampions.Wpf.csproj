@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Audio\baseball-organ.mp3" />
     <None Remove="Images\arrow_left.png" />
     <None Remove="Images\arrow_right.png" />
     <None Remove="Images\bullet_arrow_bottom.png" />
@@ -36,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Audio\baseball-organ.mp3" />
     <Resource Include="Images\arrow_left.png" />
     <Resource Include="Images\arrow_right.png" />
     <Resource Include="Images\bullet_arrow_bottom.png" />
